@@ -55,12 +55,11 @@ include_directories(${GLM_INCLUDE_DIRS})
 #endregion
 
 #region Freetype
-#file(COPY lib/freetype/freetype.dll DESTINATION ${CMAKE_BINARY_DIR})
-#file(COPY lib/freetype/freetype.lib DESTINATION ${CMAKE_BINARY_DIR}/static)
-#file(COPY lib/freetype/freetype.lib DESTINATION ${CMAKE_BINARY_DIR})
-#include_directories(include/freetype)
+file(COPY lib/freetype/freetype.dll DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY lib/freetype/freetype.lib DESTINATION ${CMAKE_BINARY_DIR}/static)
+file(COPY lib/freetype/freetype.lib DESTINATION ${CMAKE_BINARY_DIR})
+include_directories(include/freetype)
 #endregion
-
 
 include_directories(include/umbra)
 include_directories(lib/stb)

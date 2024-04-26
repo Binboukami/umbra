@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include "gl_include.hpp"
 #include <iostream>
 
 class GLFWWindowException : public std::exception
