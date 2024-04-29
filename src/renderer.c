@@ -1,4 +1,3 @@
-
 #include "umbragl.h"
 #include <stb_image.h>
 #include <file_system.h>
@@ -153,7 +152,7 @@ void U_InitRenderer(URenderer* renderer)
   glBindVertexArray(0);
 }
 
-void U_DrawTris(URenderer* renderer, Vec3 position, Vec3 color)
+void U_DrawTris(URenderer* renderer, UVec3 position, UVec3 color)
 {
   // 3 vertices
   renderer->buffer[renderer->vertex_count].position = position;
@@ -178,6 +177,15 @@ void U_DrawTris(URenderer* renderer, Vec3 position, Vec3 color)
   // renderer->buffer[2 + renderer->vertex_count].color.x = 1.0f;
   // renderer->buffer[2 + renderer->vertex_count].color.y = 1.0f;
   // renderer->buffer[2 + renderer->vertex_count].color.z = 1.0f;
+
+  UMat4x4 mat4 = U_Mat4x4();
+  UVec3 transform = { -0.5f, -0.5f, 1.0f };
+  mat4 = U_Translate(mat4, transform);
+
+  glUniformMatrix4fv(
+    glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
+    1, GL_FALSE,
+    mat4.data);
 
   glUniform4f(
     glGetUniformLocation(renderer->shader_id, "uMeshColor"),

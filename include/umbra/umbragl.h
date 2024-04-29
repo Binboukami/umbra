@@ -4,6 +4,7 @@
 #include "export_macros.h"
 #include <stdbool.h>
 #include "gl_include.h"
+#include "umath.h"
 #include "types.h"
 
 #ifndef U_MAX_VERTEX
@@ -17,20 +18,10 @@
 /* Types and Structures definitions */
 typedef ui32 U_SHADER_TYPE;
 
-typedef struct Vec2
-{
-    f32 x; f32 y;
-} Vec2;
-
-typedef struct Vec3
-{
-    f32 x; f32 y; f32 z;
-} Vec3;
-
 typedef struct Transform
 {
-    Vec2 position;
-    Vec2 size;
+    UVec2 position;
+    UVec2 size;
 } Transform;
 
 typedef ui32 TextureID;
@@ -42,8 +33,8 @@ typedef struct Texture
 
 typedef struct UVertex
 {
-    Vec3 position;
-    Vec3 color;
+    UVec3 position;
+    UVec3 color;
 } UVertex;
 
 typedef struct URenderer {
@@ -70,7 +61,7 @@ UMBRA_API void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha);
 UMBRA_API void U_SetViewport(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far);
 
 /* Drawing: Primitives */
-UMBRA_API void U_DrawTris(URenderer* renderer, Vec3 position, Vec3 color);
+UMBRA_API void U_DrawTris(URenderer* renderer, UVec3 position, UVec3 color);
 
 /* Shader */
 UMBRA_API i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type);
