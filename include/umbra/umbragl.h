@@ -4,7 +4,7 @@
 #include "export_macros.h"
 #include <stdbool.h>
 #include "gl_include.h"
-#include "types.hpp"
+#include "types.h"
 
 #ifndef U_MAX_VERTEX
     #define U_MAX_VERTEX 2048

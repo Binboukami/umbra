@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-#include "types.hpp"
+#include "types.h"
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
