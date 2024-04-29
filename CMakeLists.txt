@@ -74,11 +74,13 @@ add_library(
 
 		include/umbra/file_system.h
 		include/umbra/export_macros.h
+		include/umbra/umath.h
 		include/umbra/umbragl.h
 		include/umbra/umbra.h
 
 		src/uwindow.c
 		src/renderer.c
+		src/umath.c
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad)
