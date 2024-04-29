@@ -4,6 +4,7 @@ include(FetchContent)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
+set(CMAKE_C_FLAGS "-Wno-attributes")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
@@ -43,15 +44,15 @@ include_directories(${GLAD_LIB_PATH}/include)
 #endregion GLAD
 
 #region GLM
-FetchContent_Declare(
-	glm
-	GIT_REPOSITORY	https://github.com/g-truc/glm.git
-	GIT_TAG 	bf71a834948186f4097caa076cd2663c69a10e1e #refs/tags/0.9.9.8
-)
-
-FetchContent_MakeAvailable(glm)
-
-include_directories(${GLM_INCLUDE_DIRS})
+#FetchContent_Declare(
+#	glm
+#	GIT_REPOSITORY	https://github.com/g-truc/glm.git
+#	GIT_TAG 	bf71a834948186f4097caa076cd2663c69a10e1e #refs/tags/0.9.9.8
+#)
+#
+#FetchContent_MakeAvailable(glm)
+#
+#include_directories(${GLM_INCLUDE_DIRS})
 #endregion
 
 #region Freetype
@@ -69,16 +70,21 @@ add_library(
 
 	SHARED
 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/umbra/window.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/window.cpp
+		lib/stb/stb_image.cpp
 
-	${CMAKE_CURRENT_SOURCE_DIR}/include/umbra/renderer.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/renderer.cpp
+		include/umbra/file_system.h
+		include/umbra/export_macros.h
+		include/umbra/umbragl.h
+		include/umbra/umbra.h
 
-	lib/stb/stb_image.cpp
+		src/uwindow.c
+		src/renderer.c
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad glm::glm ${CMAKE_BINARY_DIR}/static/freetype.lib)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad)
+#target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm) TODO: Replace glm with first party math lib
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/static/freetype.lib)
+
 target_include_directories(
 	${PROJECT_NAME}
 	
@@ -87,5 +93,3 @@ target_include_directories(
 	private lib/glad/include
 	private lib/stb
 )
-
-file(COPY resources DESTINATION ${CMAKE_BINARY_DIR}/resources)

@@ -6,8 +6,7 @@
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
-inline i64
-SizeOfFile(FILE *file_ptr)
+i64 file_size(FILE *file_ptr)
 {
 	if(fseek(file_ptr, 0, SEEK_END) == 0)
 	{
