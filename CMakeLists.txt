@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 
 include(FetchContent)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clangd code completion
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_FLAGS "-Wno-attributes -fPIC")
