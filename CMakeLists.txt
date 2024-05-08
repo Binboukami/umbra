@@ -33,6 +33,9 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
+set(GLFW_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/glfw-src/include)
+include_directories(${GLFW_INCLUDE_DIR})
+
 # Comment line below so it builds on unix environment. Review it later
 # find_package(GLFW REQUIRED)
 #endregion GLFW
