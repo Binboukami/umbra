@@ -70,7 +70,7 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
 
   if(file_ptr == NULL)
   {
-    fprintf(stderr, "Could not open shader file: '%s'", filepath);
+    fprintf(stderr, "Could not open shader file: '%s'\n", filepath);
     return -1;
   }
 
@@ -78,16 +78,17 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
 
   if(buff_size == -1)
   {
-    fprintf(stderr, "Could not read file size from '%s'", filepath);
+    fprintf(stderr, "Could not read file size from '%s'\n", filepath);
     return -2;
   }
 
   /** Intialize memory to prevent erros when writing to the buffer */
-  char *shad_src = memset((char*)malloc(sizeof(char) * (buff_size + 1)), '\0', buff_size);
+  char *shad_src = memset((char*)malloc(sizeof(char) * (buff_size + 1)), '\0', buff_size + 1);
 
   if(shad_src == NULL)
   {
     /** Error intializing memory */
+		return -3;
   }
 
   size_t new_len = fread(shad_src, sizeof(char), buff_size, file_ptr);
@@ -103,7 +104,7 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
 
   /** Compilation step */
 
-  unsigned int gl_shader;
+  ui32 gl_shader;
   gl_shader = glCreateShader(shader_type);
 
   glShaderSource(gl_shader, 1, &shad_src, NULL);
@@ -118,7 +119,9 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
   if(!success)
   {
     glGetShaderInfoLog(gl_shader, 512, NULL, infoLog);
-    fprintf(stderr, "ERROR::SHADER::COMPILATION_FAILED\n%s", infoLog);
+		char* stype = shader_type == U_VERTEX_SHADER ? "VERTEX" : "FRAGMENT";
+
+    fprintf(stderr, "ERROR::%s_SHADER::COMPILATION_FAILED\n%s", stype, infoLog);
 
     return -4;
   }
