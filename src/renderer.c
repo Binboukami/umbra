@@ -25,8 +25,9 @@ void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha)
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void U_UseShader(ui32 shader_id)
+void U_UseShader(URenderer* renderer, ui32 shader_id)
 {
+	renderer->shader_id = shader_id;
   glUseProgram(shader_id);
 };
 
