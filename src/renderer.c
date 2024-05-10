@@ -1,3 +1,5 @@
+#include "glad/glad.h"
+#include "umath.h"
 #include "umbragl.h"
 #include <stb_image.h>
 #include <file_system.h>
@@ -159,37 +161,36 @@ void U_InitRenderer(URenderer* renderer)
 void U_DrawTris(URenderer* renderer, UVec3 position, UVec3 color)
 {
   // 3 vertices
-  renderer->buffer[renderer->vertex_count].position = position;
+	UVec3 v_position = { 0.0f, 0.0f, 0.0f };
+  renderer->buffer[renderer->vertex_count].position = v_position;
 
-  // renderer->buffer[renderer->vertex_count].position.x = 0.0f;
-  // renderer->buffer[renderer->vertex_count].position.y = 0.0f;
-  // renderer->buffer[renderer->vertex_count].position.z = 0.0f;
-  // renderer->buffer[renderer->vertex_count].color.x = 1.0f;
-  // renderer->buffer[renderer->vertex_count].color.y = 1.0f;
-  // renderer->buffer[renderer->vertex_count].color.z = 1.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.x = v_position.x + 1.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.y = v_position.y + 0.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.z = v_position.z + 0.0f;
 
-  renderer->buffer[1 + renderer->vertex_count].position.x = position.x + 1.0f;
-  renderer->buffer[1 + renderer->vertex_count].position.y = position.y + 0.0f;
-  renderer->buffer[1 + renderer->vertex_count].position.z = position.z + 0.0f;
-  // renderer->buffer[1 + renderer->vertex_count].color.x = 1.0f;
-  // renderer->buffer[1 + renderer->vertex_count].color.y = 1.0f;
-  // renderer->buffer[1 + renderer->vertex_count].color.z = 1.0f;
+  renderer->buffer[2 + renderer->vertex_count].position.x = v_position.x + 0.5f;
+  renderer->buffer[2 + renderer->vertex_count].position.y = v_position.y + 1.0f;
+  renderer->buffer[2 + renderer->vertex_count].position.z = v_position.z + 0.0f;
+	
+  UMat4x4 mat4 = U_Mat4x4(1.0f);
+  UMat4x4 view_mat = U_Mat4x4(1.0f);
 
-  renderer->buffer[2 + renderer->vertex_count].position.x = position.x + 0.5f;
-  renderer->buffer[2 + renderer->vertex_count].position.y = position.y + 1.0f;
-  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f;
-  // renderer->buffer[2 + renderer->vertex_count].color.x = 1.0f;
-  // renderer->buffer[2 + renderer->vertex_count].color.y = 1.0f;
-  // renderer->buffer[2 + renderer->vertex_count].color.z = 1.0f;
-
-  UMat4x4 mat4 = U_Mat4x4();
-  UVec3 transform = { -0.5f, -0.5f, 1.0f };
+  UVec3 transform = position;
   mat4 = U_Translate(mat4, transform);
 
   glUniformMatrix4fv(
     glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
-    1, GL_FALSE,
-    mat4.data);
+    1, GL_TRUE,
+    &mat4.data[0][0]);
+
+	// Apply offset to center on view matrix
+	UVec3 view_translate = { -0.5f, -0.5f, -0.9f }; // Camera position?
+	view_mat = U_Translate(view_mat, view_translate);
+
+  glUniformMatrix4fv(
+    glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_VIEW"),
+    1, GL_TRUE,
+    &view_mat.data[0][0]);
 
   glUniform4f(
     glGetUniformLocation(renderer->shader_id, "uMeshColor"),
@@ -225,4 +226,8 @@ void U_EndDrawing(URenderer* renderer)
 void U_SetViewport(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far)
 {
   glViewport(left, top, right, bottom);
+	glDepthRangef(clip_near, clip_far);
+
+	// TODO: Set orthogonal matrix
+
 }

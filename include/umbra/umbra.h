@@ -30,8 +30,8 @@ UMBRA_API void U_PollWindowEvents();
 UMBRA_API void U_CloseWindow(UWindow* window_ptr);
 
 /* Umbra Math */
-UMBRA_API UMat4x4 U_Mat4x4(); // redefine export
-UMBRA_API UMat4x4 U_Translate(UMat4x4 mat, UVec3 vec3); // redefine export
+UMBRA_API UMat4x4 U_Mat4x4(const f32 scalar); // redefine export
+UMBRA_API UMat4x4 U_Translate(const UMat4x4 mat, const UVec3 vec3); // redefine export
 
 #ifdef __cplusplus
 }

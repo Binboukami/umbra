@@ -11,5 +11,5 @@ out vec3 Color;
 
 void main()
 {
-  gl_Position = vec4(absPos, 1.0f) * UNIFORM_MATRIX_MODEL;
+  gl_Position = UNIFORM_MATRIX_VIEW * UNIFORM_MATRIX_MODEL * vec4(absPos, 1.0f);
 }

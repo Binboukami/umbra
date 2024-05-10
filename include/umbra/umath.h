@@ -27,8 +27,13 @@ extern "C" {
 /* Function definitions */
 /* Matrix manipulation */
 
-UMat4x4 U_Mat4x4();
-UMat4x4 U_Translate(UMat4x4 mat, UVec3 vec3);
+UMat4x4 U_Mat4x4(const f32 scalar);
+UMat4x4 U_Translate(const UMat4x4 mat,const UVec3 vec3);
+UMat4x4 U_Scale(const UMat4x4 mat, const UVec3 vec3);
+UMat4x4 U_MatMult(const UMat4x4 matA, const UMat4x4 matB);
+
+/* Projections */
+// TODO: UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top);
 
 #ifdef __cplusplus
 }
