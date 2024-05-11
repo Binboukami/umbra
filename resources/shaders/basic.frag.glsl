@@ -1,10 +1,9 @@
 #version 430 core
 
+in vec3 vColor;
 out vec4 FragColor;
-
-uniform vec4 uMeshColor;
 
 void main()
 {
-    FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f) * uMeshColor;
+    FragColor = vec4(vColor, 1.0f);
 }

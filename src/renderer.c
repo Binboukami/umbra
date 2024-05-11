@@ -132,124 +132,138 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
   return gl_shader;
 }
 
-void U_InitRenderer(URenderer* renderer)
+void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 {
   renderer->vertex_count = 0;
+  renderer->index_count = 0;
   renderer->shader_id = 0;
 
-  glGenBuffers(1, &renderer->vbo);
-  glGenBuffers(1, &renderer->ebo);
+  renderer->ebo = 0;
+  renderer->use_ebo = use_ebo;
 
+  glGenBuffers(1, &renderer->vbo);
   glGenVertexArrays(1, &renderer->vao);
 
   glBindVertexArray(renderer->vao);
-
   glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
-  // glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), renderer->buffer, GL_DYNAMIC_DRAW);
+
+	if(use_ebo)
+	{
+		glGenBuffers(1, &renderer->ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->ebo);
+	}
 
   // Attrib 0: { x, y, z }
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)0);
   glEnableVertexAttribArray(0);
 
   // Attrib 1: { r, g, b }
-  // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(Vec3)));
-  // glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)(sizeof(UVec3)));
+  glEnableVertexAttribArray(1);
 
   glBindVertexArray(0);
 }
 
-void U_DrawTris(URenderer* renderer, UVec3 position, UVec3 color)
+void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
 {
-  // 3 vertices
-	UVec3 v_position = { 0.0f, 0.0f, 0.0f };
-  renderer->buffer[renderer->vertex_count].position = v_position;
+	ui32 prev_vert_count = renderer->vertex_count;
+  renderer->buffer[renderer->vertex_count].position = position;
 
-  renderer->buffer[1 + renderer->vertex_count].position.x = v_position.x + 1.0f;
-  renderer->buffer[1 + renderer->vertex_count].position.y = v_position.y + 0.0f;
-  renderer->buffer[1 + renderer->vertex_count].position.z = v_position.z + 0.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.x = position.x + size;
+  renderer->buffer[1 + renderer->vertex_count].position.y = position.y + 0.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.z = position.z + 0.0f;
 
-  renderer->buffer[2 + renderer->vertex_count].position.x = v_position.x + 0.5f;
-  renderer->buffer[2 + renderer->vertex_count].position.y = v_position.y + 1.0f;
-  renderer->buffer[2 + renderer->vertex_count].position.z = v_position.z + 0.0f;
+  renderer->buffer[2 + renderer->vertex_count].position.x = position.x + size / 2;
+  renderer->buffer[2 + renderer->vertex_count].position.y = position.y + size;
+  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f;
+
+	if(renderer->use_ebo)
+	{
+		renderer->index_buffer[renderer->index_count] = renderer->vertex_count;
+		renderer->index_buffer[1 + renderer->index_count] = 1 + renderer->vertex_count;
+		renderer->index_buffer[2 + renderer->index_count] = 2 + renderer->vertex_count;
+
+		renderer->index_count += 3;
+	}
 	
-  UMat4x4 mat4 = U_Mat4x4(1.0f);
-  UMat4x4 view_mat = U_Mat4x4(1.0f);
-
-  UVec3 transform = position;
-  mat4 = U_Translate(mat4, transform);
-
-  glUniformMatrix4fv(
-    glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
-    1, GL_TRUE,
-    &mat4.data[0][0]);
-
-	// Apply offset to center on view matrix
-	UVec3 view_translate = { -0.5f, -0.5f, -0.9f }; // Camera position?
-	view_mat = U_Translate(view_mat, view_translate);
-
-  glUniformMatrix4fv(
-    glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_VIEW"),
-    1, GL_TRUE,
-    &view_mat.data[0][0]);
-
-  glUniform4f(
-    glGetUniformLocation(renderer->shader_id, "uMeshColor"),
-    color.x, color.y, color.z, 1.0f);
-
   renderer->vertex_count += 3;
+
+	/** Set vertices color **/
+	ui32 n = (renderer->vertex_count - prev_vert_count);
+
+	for (ui32 i = 0; i < n; i++)
+	{
+		renderer->buffer[i + prev_vert_count].color = color;
+	}
+
+	UMat4x4 model_mat = U_Mat4x4(1.0f);
+	glUniformMatrix4fv(
+		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
+		1, GL_TRUE,
+		&model_mat.data[0][0]);
 }
 
 // TODO: Use element object buffers
-void U_DrawQuad(URenderer* renderer, UVec3 position, UVec3 color)
+void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
 {
-  // first tris
-	UVec3 v_position = { 0.0f, 0.0f, 0.0f };
-  renderer->buffer[renderer->vertex_count].position = v_position;
+	ui32 prev_vert_count = renderer->vertex_count;
 
-  renderer->buffer[1 + renderer->vertex_count].position.x = v_position.x + 1.0f;
-  renderer->buffer[1 + renderer->vertex_count].position.y = v_position.y + 0.0f;
-  renderer->buffer[1 + renderer->vertex_count].position.z = v_position.z + 0.0f;
+  renderer->buffer[renderer->vertex_count].position = position;
 
-  renderer->buffer[2 + renderer->vertex_count].position.x = v_position.x + 1.0f;
-  renderer->buffer[2 + renderer->vertex_count].position.y = v_position.y + 1.0f;
-  renderer->buffer[2 + renderer->vertex_count].position.z = v_position.z + 0.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.x = position.x + size;
+  renderer->buffer[1 + renderer->vertex_count].position.y = position.y + 0.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.z = position.z + 0.0f;
 
-  // second tris
-  renderer->buffer[3 + renderer->vertex_count].position = v_position;
+  renderer->buffer[2 + renderer->vertex_count].position.x = position.x + size;
+  renderer->buffer[2 + renderer->vertex_count].position.y = position.y + size;
+  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f; 
 
-  renderer->buffer[4 + renderer->vertex_count].position.x = v_position.x + 1.0f;
-  renderer->buffer[4 + renderer->vertex_count].position.y = v_position.y + 1.0f;
-  renderer->buffer[4 + renderer->vertex_count].position.z = v_position.z + 0.0f;
+	if(renderer->use_ebo)
+	{
+		// Define 4th vertex
+		renderer->buffer[3 + renderer->vertex_count].position.x = position.x + 0.0f;
+		renderer->buffer[3 + renderer->vertex_count].position.y = position.y + size;
+		renderer->buffer[3 + renderer->vertex_count].position.z = position.z + 0.0f;
 
-  renderer->buffer[5 + renderer->vertex_count].position.x = v_position.x + 0.0f;
-  renderer->buffer[5 + renderer->vertex_count].position.y = v_position.y + 1.0f;
-  renderer->buffer[5 + renderer->vertex_count].position.z = v_position.z + 0.0f;
+		renderer->index_buffer[renderer->index_count] = renderer->vertex_count;
+		renderer->index_buffer[1 + renderer->index_count] = renderer->vertex_count + 1;
+		renderer->index_buffer[2 + renderer->index_count] = renderer->vertex_count + 2;
 
-  UMat4x4 mat4 = U_Mat4x4(1.0f);
-  UMat4x4 view_mat = U_Mat4x4(1.0f);
+		renderer->index_buffer[3 + renderer->index_count] = renderer->vertex_count;
+		renderer->index_buffer[4 + renderer->index_count] = renderer->vertex_count + 2;
+		renderer->index_buffer[5 + renderer->index_count] = renderer->vertex_count + 3;
+		
+		renderer->vertex_count += 4;
+		renderer->index_count += 6;
+	}
+	else
+	{
+		renderer->buffer[3 + renderer->vertex_count].position = position;
 
-  UVec3 transform = position;
-  mat4 = U_Translate(mat4, transform);
+		renderer->buffer[4 + renderer->vertex_count].position.x = position.x + size;
+		renderer->buffer[4 + renderer->vertex_count].position.y = position.y + size;
+		renderer->buffer[4 + renderer->vertex_count].position.z = position.z + 0.0f;
 
-  glUniformMatrix4fv(
-    glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
-    1, GL_TRUE,
-    &mat4.data[0][0]);
+		renderer->buffer[5 + renderer->vertex_count].position.x = position.x + 0.0f;
+		renderer->buffer[5 + renderer->vertex_count].position.y = position.y + size;
+		renderer->buffer[5 + renderer->vertex_count].position.z = position.z + 0.0f;
 
-	// Apply offset to center on view matrix
-	UVec3 view_translate = { -0.5f, -0.5f, -0.9f }; // Camera position?
-	view_mat = U_Translate(view_mat, view_translate);
+		renderer->vertex_count += 6;
+	}
 
-  glUniformMatrix4fv(
-    glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_VIEW"),
-    1, GL_TRUE,
-    &view_mat.data[0][0]);
+	/** Set vertices color **/
+	ui32 n = (renderer->vertex_count - prev_vert_count);
 
-  glUniform4f(
-    glGetUniformLocation(renderer->shader_id, "uMeshColor"),
-    color.x, color.y, color.z, 1.0f);
+	for (ui32 i = 0; i < n; i++)
+	{
+		renderer->buffer[i + prev_vert_count].color = color;
+	}
 
-  renderer->vertex_count += 6;
+	UMat4x4 model_mat = U_Mat4x4(1.0f);
+	glUniformMatrix4fv(
+		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
+		1, GL_TRUE,
+		&model_mat.data[0][0]);
 }
 
 void U_BindVertexArray(ui32 vao)
@@ -260,6 +274,7 @@ void U_BindVertexArray(ui32 vao)
 void U_BeginDrawing(URenderer* renderer)
 {
   renderer->vertex_count = 0;
+  renderer->index_count = 0;
   U_BindVertexArray(renderer->vao);
 }
 
@@ -269,8 +284,28 @@ void U_EndDrawing(URenderer* renderer)
 
   if(renderer->vertex_count > 0)
   {
-    glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), renderer->buffer, GL_DYNAMIC_DRAW);
-    glDrawArrays(GL_TRIANGLES, 0, renderer->vertex_count);
+		UMat4x4 view_mat = U_Mat4x4(1.0f);
+
+		// Apply offset to center on view matrix
+		UVec3 view_translate = { 0.0f, 0.0f, -0.9f }; // Camera position?
+		view_mat = U_Translate(view_mat, view_translate);
+
+		glUniformMatrix4fv(
+			glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_VIEW"),
+			1, GL_TRUE,
+			&view_mat.data[0][0]);
+
+			glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), &renderer->buffer, GL_DYNAMIC_DRAW);
+
+		if(renderer->use_ebo)
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(renderer->index_buffer), &renderer->index_buffer, GL_DYNAMIC_DRAW);
+			glDrawElements(GL_TRIANGLES, renderer->index_count, GL_UNSIGNED_INT, 0);
+		}
+		else
+		{
+			glDrawArrays(GL_TRIANGLES, 0, renderer->vertex_count);
+		}
 
     U_BindVertexArray(0);
   }
