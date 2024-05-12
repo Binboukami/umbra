@@ -57,3 +57,18 @@ UMat4x4 U_MatMult(const UMat4x4 matA, const UMat4x4 matB)
 
 	return mat;
 }
+
+UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far)
+{
+	UMat4x4 ortho = U_Mat4x4(1.0f);
+
+	ortho.data[0][0] = 2 / (right - left);
+	ortho.data[1][1] = 2 / (top - bottom);
+	ortho.data[2][2] = -2 / (far - near);
+
+	ortho.data[0][3] = -((right + left) / (right - left));
+	ortho.data[1][3] = -((top + bottom) / (top - bottom));
+	ortho.data[2][3] = - (far + near ) / 2;
+
+	return ortho;	
+}

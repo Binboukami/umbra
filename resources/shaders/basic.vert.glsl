@@ -11,6 +11,6 @@ out vec3 vColor;
 
 void main()
 {
-  gl_Position = UNIFORM_MATRIX_VIEW * UNIFORM_MATRIX_MODEL * vec4(absPos, 1.0f);
+  gl_Position = UNIFORM_MATRIX_PROJECTION * UNIFORM_MATRIX_VIEW * UNIFORM_MATRIX_MODEL * vec4(absPos, 1.0f);
 	vColor = absColor;
 }

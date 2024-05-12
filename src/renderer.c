@@ -311,11 +311,15 @@ void U_EndDrawing(URenderer* renderer)
   }
 }
 
-void U_SetViewport(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far)
+void U_SetViewport(URenderer* renderer, f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far)
 {
   glViewport(left, top, right, bottom);
 	glDepthRangef(clip_near, clip_far);
 
-	// TODO: Set orthogonal matrix
+	UMat4x4 projection = U_MatOrtho(left, right, bottom, top, clip_near, clip_far);
 
+	glUniformMatrix4fv(
+		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_PROJECTION"),
+		1, GL_TRUE,
+		&projection.data[0][0]);
 }
