@@ -153,6 +153,9 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->ebo);
 	}
 
+	glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), &renderer->buffer, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(renderer->index_buffer), &renderer->index_buffer, GL_DYNAMIC_DRAW);
+
   // Attrib 0: { x, y, z }
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)0);
   glEnableVertexAttribArray(0);
@@ -295,11 +298,11 @@ void U_EndDrawing(URenderer* renderer)
 			1, GL_TRUE,
 			&view_mat.data[0][0]);
 
-			glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), &renderer->buffer, GL_DYNAMIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(renderer->buffer), &renderer->buffer);
 
 		if(renderer->use_ebo)
 		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(renderer->index_buffer), &renderer->index_buffer, GL_DYNAMIC_DRAW);
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(renderer->index_buffer), &renderer->index_buffer);
 			glDrawElements(GL_TRIANGLES, renderer->index_count, GL_UNSIGNED_INT, 0);
 		}
 		else
