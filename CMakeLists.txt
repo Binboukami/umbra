@@ -13,51 +13,53 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_FLAGS "-fpermissive -fPIC")
 
 project(
-		Umbra
+		umbra
 		VERSION 0.1.0
 		LANGUAGES C CXX
 )
 
-#region GLFW
-FetchContent_Declare(
-	glfw
-	GIT_REPOSITORY https://github.com/glfw/glfw.git
-	GIT_TAG 3.3.9 # e2c92645460f680fd272fd2eed591efb2be7dc31
-	# OVERRIDE_FIND_PACKAGE -- This line broke on unix
-)
+#region Build options
 
-FetchContent_MakeAvailable(glfw)
+set(SHADERS_DIR ${PROJECT_BINARY_DIR}/resources/shaders) # Overridable variable
+add_definitions(-DU_SHADERS_DIR="${SHADERS_DIR}") # To enable access in code
 
-set(GLFW_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+#endregion Build options
 
-set(GLFW_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/glfw-src/include)
-include_directories(${GLFW_INCLUDE_DIR})
+#region Dependencies
 
-# Comment line below so it builds on unix environment. Review it later
-# find_package(GLFW REQUIRED)
-#endregion GLFW
+	#region GLFW
+	FetchContent_Declare(
+		glfw
+		GIT_REPOSITORY https://github.com/glfw/glfw.git
+		GIT_TAG 3.3.9 # e2c92645460f680fd272fd2eed591efb2be7dc31
+		# OVERRIDE_FIND_PACKAGE -- This line broke on unix
+	)
 
-#region GLAD
-set(GLAD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/glad)
+	FetchContent_MakeAvailable(glfw)
 
-add_library(
-	glad
-	STATIC
-	${GLAD_LIB_PATH}/src/glad.c)
+	set(GLFW_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+	set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+	set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+	set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-include_directories(${GLAD_LIB_PATH}/include)
-#endregion GLAD
+	set(GLFW_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/glfw-src/include)
+	include_directories(${GLFW_INCLUDE_DIR})
 
-#region Freetype
-# TODO: Add unix dynamic libraries
-file(COPY lib/freetype/freetype.dll DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY lib/freetype/freetype.lib DESTINATION ${CMAKE_BINARY_DIR}/static)
-file(COPY lib/freetype/freetype.lib DESTINATION ${CMAKE_BINARY_DIR})
-include_directories(include/freetype)
-#endregion
+	# Comment line below so it builds on unix environment. Review it later
+	# find_package(GLFW REQUIRED)
+	#endregion GLFW
+
+	#region GLAD
+	set(GLAD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/glad)
+
+	add_library(
+		glad
+		STATIC
+		${GLAD_LIB_PATH}/src/glad.c)
+
+	include_directories(${GLAD_LIB_PATH}/include)
+	#endregion GLAD
+#endregion Dependencies
 
 include_directories(include/umbra)
 include_directories(lib/stb)
@@ -81,7 +83,6 @@ add_library(
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad)
-# target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/static/freetype.lib)
 
 target_include_directories(
 	${PROJECT_NAME}
@@ -91,3 +92,11 @@ target_include_directories(
 	private lib/glad/include
 	private lib/stb
 )
+
+# TODO: Copy on changes to resource assets
+file(
+	COPY
+	resources/shaders/default.vert.glsl
+	resources/shaders/default.frag.glsl
+
+	DESTINATION ${SHADERS_DIR})

@@ -5,6 +5,8 @@
 #include <file_system.h>
 #include <string.h>
 
+#define U_CONFIG_SHADERS_DIR U_SHADERS_DIR
+
 void U_BindTexture2D(TextureID id)
 {
   glBindTexture(GL_TEXTURE_2D, id);
@@ -165,6 +167,20 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
   glVertexAttribPointer(U_DEFAULT_VERTEX_ATTR_COLOR_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)(sizeof(UVec3)));
 
   glBindVertexArray(0);
+
+	/** Set up shader **/
+	i32 vert_shader = U_LoadShader(U_CONFIG_SHADERS_DIR"/default.vert.glsl", U_VERTEX_SHADER);
+	i32 frag_shader = U_LoadShader(U_CONFIG_SHADERS_DIR"/default.frag.glsl", U_FRAGMENT_SHADER);
+
+	if(vert_shader < 0 || frag_shader < 0)
+	{
+		// TODO: Add error return value
+		printf("%s\n", U_CONFIG_SHADERS_DIR);
+	}
+
+	i32 shader = U_CompileShaderProgram(vert_shader, frag_shader); 
+
+	U_UseShader(renderer, shader);
 }
 
 void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
