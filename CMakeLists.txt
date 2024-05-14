@@ -76,7 +76,7 @@ add_library(
 		include/umbra/umbra.h
 
 		src/uwindow.c
-		src/renderer.c
+		src/umbragl.c
 		src/umath.c
 )
 

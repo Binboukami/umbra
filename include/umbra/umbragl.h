@@ -16,6 +16,9 @@
 #define U_VERTEX_SHADER 0x8B31 // Redefine for 'GL_VERTEX_SHADER'
 
 /* Types and Structures definitions */
+#define U_DEFAULT_VERTEX_ATTR_POSITION_IDX 0
+#define U_DEFAULT_VERTEX_ATTR_COLOR_IDX 1
+
 typedef ui32 U_SHADER_TYPE;
 
 typedef struct Transform

@@ -157,12 +157,12 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(renderer->index_buffer), &renderer->index_buffer, GL_DYNAMIC_DRAW);
 
   // Attrib 0: { x, y, z }
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)0);
-  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(U_DEFAULT_VERTEX_ATTR_POSITION_IDX);
+  glVertexAttribPointer(U_DEFAULT_VERTEX_ATTR_POSITION_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)0);
 
   // Attrib 1: { r, g, b }
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)(sizeof(UVec3)));
-  glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(U_DEFAULT_VERTEX_ATTR_COLOR_IDX);
+  glVertexAttribPointer(U_DEFAULT_VERTEX_ATTR_COLOR_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)(sizeof(UVec3)));
 
   glBindVertexArray(0);
 }
