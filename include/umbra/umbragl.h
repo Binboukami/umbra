@@ -70,6 +70,7 @@ UMBRA_API void U_SetViewport(URenderer* renderer, f32 left, f32 right, f32 botto
 /* Drawing: Primitives */
 UMBRA_API void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
 UMBRA_API void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
+UMBRA_API void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color);
 
 /* Shader */
 UMBRA_API i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type);

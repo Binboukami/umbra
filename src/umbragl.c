@@ -285,6 +285,68 @@ void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const
 		&model_mat.data[0][0]);
 }
 
+void U_DrawRect(URenderer *renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color)
+{
+	ui32 prev_vert_count = renderer->vertex_count;
+
+  renderer->buffer[renderer->vertex_count].position = position;
+
+  renderer->buffer[1 + renderer->vertex_count].position.x = position.x + width;
+  renderer->buffer[1 + renderer->vertex_count].position.y = position.y + 0.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.z = position.z + 0.0f;
+
+  renderer->buffer[2 + renderer->vertex_count].position.x = position.x + width;
+  renderer->buffer[2 + renderer->vertex_count].position.y = position.y + height;
+  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f; 
+
+	if(renderer->use_ebo)
+	{
+		// Define 4th vertex
+		renderer->buffer[3 + renderer->vertex_count].position.x = position.x + 0.0f;
+		renderer->buffer[3 + renderer->vertex_count].position.y = position.y + height;
+		renderer->buffer[3 + renderer->vertex_count].position.z = position.z + 0.0f;
+
+		renderer->index_buffer[renderer->index_count] = renderer->vertex_count;
+		renderer->index_buffer[1 + renderer->index_count] = renderer->vertex_count + 1;
+		renderer->index_buffer[2 + renderer->index_count] = renderer->vertex_count + 2;
+
+		renderer->index_buffer[3 + renderer->index_count] = renderer->vertex_count;
+		renderer->index_buffer[4 + renderer->index_count] = renderer->vertex_count + 2;
+		renderer->index_buffer[5 + renderer->index_count] = renderer->vertex_count + 3;
+		
+		renderer->vertex_count += 4;
+		renderer->index_count += 6;
+	}
+	else
+	{
+		renderer->buffer[3 + renderer->vertex_count].position = position;
+
+		renderer->buffer[4 + renderer->vertex_count].position.x = position.x + width;
+		renderer->buffer[4 + renderer->vertex_count].position.y = position.y + height;
+		renderer->buffer[4 + renderer->vertex_count].position.z = position.z + 0.0f;
+
+		renderer->buffer[5 + renderer->vertex_count].position.x = position.x + 0.0f;
+		renderer->buffer[5 + renderer->vertex_count].position.y = position.y + height;
+		renderer->buffer[5 + renderer->vertex_count].position.z = position.z + 0.0f;
+
+		renderer->vertex_count += 6;
+	}
+
+	/** Set vertices color **/
+	ui32 n = (renderer->vertex_count - prev_vert_count);
+
+	for (ui32 i = 0; i < n; i++)
+	{
+		renderer->buffer[i + prev_vert_count].color = color;
+	}
+
+	UMat4x4 model_mat = U_Mat4x4(1.0f);
+	glUniformMatrix4fv(
+		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
+		1, GL_TRUE,
+		&model_mat.data[0][0]);
+}
+
 void U_BindVertexArray(ui32 vao)
 {
   glBindVertexArray(vao);
