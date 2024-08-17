@@ -97,7 +97,7 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
   }
 
   size_t new_len = fread(shad_src, sizeof(char), buff_size, file_ptr);
-  
+
   if(ferror(file_ptr) != 0)
   {
     fclose(file_ptr);
@@ -178,7 +178,7 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 		printf("%s\n", U_CONFIG_SHADERS_DIR);
 	}
 
-	i32 shader = U_CompileShaderProgram(vert_shader, frag_shader); 
+	i32 shader = U_CompileShaderProgram(vert_shader, frag_shader);
 
 	U_UseShader(renderer, shader);
 }
@@ -204,7 +204,7 @@ void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const
 
 		renderer->index_count += 3;
 	}
-	
+
   renderer->vertex_count += 3;
 
 	/** Set vertices color **/
@@ -235,7 +235,7 @@ void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const
 
   renderer->buffer[2 + renderer->vertex_count].position.x = position.x + size;
   renderer->buffer[2 + renderer->vertex_count].position.y = position.y + size;
-  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f; 
+  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f;
 
 	if(renderer->use_ebo)
 	{
@@ -251,7 +251,7 @@ void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const
 		renderer->index_buffer[3 + renderer->index_count] = renderer->vertex_count;
 		renderer->index_buffer[4 + renderer->index_count] = renderer->vertex_count + 2;
 		renderer->index_buffer[5 + renderer->index_count] = renderer->vertex_count + 3;
-		
+
 		renderer->vertex_count += 4;
 		renderer->index_count += 6;
 	}
@@ -297,7 +297,7 @@ void U_DrawRect(URenderer *renderer, const UVec3 position, const f32 width, cons
 
   renderer->buffer[2 + renderer->vertex_count].position.x = position.x + width;
   renderer->buffer[2 + renderer->vertex_count].position.y = position.y + height;
-  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f; 
+  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f;
 
 	if(renderer->use_ebo)
 	{
@@ -313,7 +313,7 @@ void U_DrawRect(URenderer *renderer, const UVec3 position, const f32 width, cons
 		renderer->index_buffer[3 + renderer->index_count] = renderer->vertex_count;
 		renderer->index_buffer[4 + renderer->index_count] = renderer->vertex_count + 2;
 		renderer->index_buffer[5 + renderer->index_count] = renderer->vertex_count + 3;
-		
+
 		renderer->vertex_count += 4;
 		renderer->index_count += 6;
 	}
@@ -395,12 +395,12 @@ void U_EndDrawing(URenderer* renderer)
 void U_SetViewport(URenderer* renderer, f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far)
 {
   glViewport(left, top, right, bottom);
-	glDepthRangef(clip_near, clip_far);
+  glDepthRangef(clip_near, clip_far);
 
-	UMat4x4 projection = U_MatOrtho(left, right, bottom, top, clip_near, clip_far);
+  UMat4x4 projection = U_MatOrtho(left, right, bottom, top, clip_near, clip_far);
 
-	glUniformMatrix4fv(
-		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_PROJECTION"),
-		1, GL_TRUE,
-		&projection.data[0][0]);
+  glUniformMatrix4fv(
+      glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_PROJECTION"),
+      1, GL_TRUE,
+      &projection.data[0][0]);
 }
