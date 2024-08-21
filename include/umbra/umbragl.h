@@ -41,14 +41,16 @@ typedef struct UVertex
 } UVertex;
 
 typedef struct URenderer {
+    ui8 id;
+
     ui32 vbo;
     ui32 ebo;
     ui32 vao;
 
-		bool use_ebo;
+    bool use_ebo;
 
     ui32 vertex_count;
-		ui32 index_count;
+    ui32 index_count;
     UVertex buffer[U_MAX_VERTEX];
     ui32 index_buffer[U_MAX_VERTEX * 2];
 
@@ -62,15 +64,15 @@ extern "C" {
 /* Function definitions */
 /* General */
 UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
-UMBRA_API void U_BeginDrawing(URenderer* renderer);
-UMBRA_API void U_EndDrawing(URenderer* renderer);
+UMBRA_API void U_BeginDrawing();
+UMBRA_API void U_EndDrawing();
 UMBRA_API void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha);
 UMBRA_API void U_SetViewport(URenderer* renderer, f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far);
 
 /* Drawing: Primitives */
-UMBRA_API void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
-UMBRA_API void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
-UMBRA_API void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color);
+UMBRA_API void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color);
+UMBRA_API void U_DrawQuad(const UVec3 position, const f32 size, const UVec3 color);
+UMBRA_API void U_DrawRect(const UVec3 position, const f32 width, const f32 height, const UVec3 color);
 
 /* Shader */
 UMBRA_API i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type);

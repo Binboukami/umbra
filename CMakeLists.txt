@@ -80,6 +80,7 @@ add_library(
 		src/uwindow.c
 		src/umbragl.c
 		src/umath.c
+		src/umbra.c
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad)

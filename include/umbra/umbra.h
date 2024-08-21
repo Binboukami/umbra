@@ -6,6 +6,7 @@
 #include "umbragl.h"
 
 /* Structure defitions */
+#define MAX_SUPPORTED_RENDERERS 8
 
 typedef struct UWindow
 {
@@ -19,6 +20,8 @@ typedef struct UWindow
 typedef struct UCoreContext
 {
     UWindow window;
+    URenderer renderer;
+
 } UCoreContext;
 
 extern UCoreContext UCORE; // Global library context

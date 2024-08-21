@@ -40,6 +40,12 @@ bool U_InitWindow(const char* title, int width, int height)
 
 	gladLoadGL();
 
+	// Init default renderering context
+	U_InitRenderer(&UCORE.renderer, true /* TODO: Load value from flag */);
+
+	// Set window clip space
+	U_SetViewport(&UCORE.renderer, 0, width, height, 0, 1, -1);
+
 	return true;
 }
 

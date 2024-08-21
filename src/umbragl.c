@@ -1,9 +1,11 @@
-#include "glad/glad.h"
-#include "umath.h"
-#include "umbragl.h"
 #include <stb_image.h>
 #include <file_system.h>
 #include <string.h>
+
+#include "glad/glad.h"
+#include "umath.h"
+#include "umbragl.h"
+#include "umbra.h"
 
 #define U_CONFIG_SHADERS_DIR U_SHADERS_DIR
 
@@ -183,8 +185,10 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 	U_UseShader(renderer, shader);
 }
 
-void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
+void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color)
 {
+	URenderer *renderer = &UCORE.renderer;
+
 	ui32 prev_vert_count = renderer->vertex_count;
   renderer->buffer[renderer->vertex_count].position = position;
 
@@ -223,8 +227,10 @@ void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const
 }
 
 // TODO: Use element object buffers
-void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
+void U_DrawQuad(const UVec3 position, const f32 size, const UVec3 color)
 {
+	URenderer* renderer = &UCORE.renderer;
+
 	ui32 prev_vert_count = renderer->vertex_count;
 
   renderer->buffer[renderer->vertex_count].position = position;
@@ -285,8 +291,10 @@ void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const
 		&model_mat.data[0][0]);
 }
 
-void U_DrawRect(URenderer *renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color)
+void U_DrawRect(const UVec3 position, const f32 width, const f32 height, const UVec3 color)
 {
+	URenderer* renderer = &UCORE.renderer;
+
 	ui32 prev_vert_count = renderer->vertex_count;
 
   renderer->buffer[renderer->vertex_count].position = position;
@@ -352,15 +360,19 @@ void U_BindVertexArray(ui32 vao)
   glBindVertexArray(vao);
 }
 
-void U_BeginDrawing(URenderer* renderer)
+void U_BeginDrawing()
 {
+	URenderer* renderer = &UCORE.renderer;
+
   renderer->vertex_count = 0;
   renderer->index_count = 0;
   U_BindVertexArray(renderer->vao);
 }
 
-void U_EndDrawing(URenderer* renderer)
+void U_EndDrawing()
 {
+	URenderer* renderer = &UCORE.renderer;
+
   glClear(GL_COLOR_BUFFER_BIT);
 
   if(renderer->vertex_count > 0)
