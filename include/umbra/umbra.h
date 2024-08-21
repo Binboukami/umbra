@@ -16,18 +16,29 @@ typedef struct UWindow
     bool exit;
 } UWindow;
 
+typedef struct UCoreContext
+{
+    UWindow window;
+} UCoreContext;
+
+extern UCoreContext UCORE; // Global library context
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Function definitions */
+
+/* Core API */
+// TODO
+
 /* Window API */
 
-UMBRA_API UWindow* U_InitWindow(const char* title, int width, int height);
+UMBRA_API bool U_InitWindow(const char* title, int width, int height);
 UMBRA_API GLFWwindow* U_GetGLFWHandler();
-UMBRA_API bool U_ShouldCloseWindow(const UWindow* window_ptr);
+UMBRA_API bool U_ShouldCloseWindow();
 UMBRA_API void U_PollWindowEvents();
-UMBRA_API void U_CloseWindow(UWindow* window_ptr);
+UMBRA_API void U_CloseWindow();
 
 /* Umbra Math */
 UMBRA_API UMat4x4 U_Mat4x4(const f32 scalar); // redefine export

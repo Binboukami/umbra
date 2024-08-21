@@ -3,7 +3,7 @@
 
 #include "umbra.h"
 
-UWindow* U_InitWindow(const char* title, int width, int height)
+bool U_InitWindow(const char* title, int width, int height)
 {
 	if(!glfwInit())
 	{
@@ -28,34 +28,27 @@ UWindow* U_InitWindow(const char* title, int width, int height)
 
 	// Todo: Check for OpenGL Errors
 
-	UWindow* u_window = (UWindow*)malloc(sizeof(UWindow));
+	UCORE.window._glfw_handler = glfw_handler;
 
-	if(u_window == NULL)
-	{
-		fprintf(stderr, "Failed to initialize UWindow. Please download more ram.");
-		return NULL;
-	}
-
-	u_window->_glfw_handler = glfw_handler;
 	glfwMakeContextCurrent(glfw_handler);
 
-	u_window->title = title;
-	u_window->width = width;
-	u_window->height = height;
+	UCORE.window.title = title;
+	UCORE.window.width = width;
+	UCORE.window.height = height;
 
-	u_window->exit = false;
+	UCORE.window.exit = false;
 
 	gladLoadGL();
 
-	return u_window;
+	return true;
 }
 
-bool U_ShouldCloseWindow(const UWindow* window_ptr)
+bool U_ShouldCloseWindow()
 {
-	glfwSwapBuffers(window_ptr->_glfw_handler);
+	glfwSwapBuffers(UCORE.window._glfw_handler);
 
 	U_PollWindowEvents();
-	return glfwWindowShouldClose(window_ptr->_glfw_handler) || window_ptr->exit;
+	return glfwWindowShouldClose(UCORE.window._glfw_handler) || UCORE.window.exit;
 }
 
 void U_PollWindowEvents()
@@ -63,10 +56,9 @@ void U_PollWindowEvents()
 	glfwPollEvents();
 }
 
-void U_CloseWindow(UWindow* window_ptr)
+void U_CloseWindow()
 {
-	glfwDestroyWindow(window_ptr->_glfw_handler);
+	glfwDestroyWindow(UCORE.window._glfw_handler);
 	glfwTerminate();
-
-	free(window_ptr);
+	// free(window_ptr);
 }
