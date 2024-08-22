@@ -30,46 +30,45 @@ add_definitions(-DU_SHADERS_DIR="${SHADERS_DIR}") # To enable access in code
 
 #region Dependencies
 
-	#region GLFW
-	FetchContent_Declare(
+#region GLFW
+FetchContent_Declare(
 		glfw
 		GIT_REPOSITORY https://github.com/glfw/glfw.git
 		GIT_TAG 3.3.9 # e2c92645460f680fd272fd2eed591efb2be7dc31
-		# OVERRIDE_FIND_PACKAGE -- This line broke on unix
+															# OVERRIDE_FIND_PACKAGE -- This line broke on unix
 	)
 
-	FetchContent_MakeAvailable(glfw)
+FetchContent_MakeAvailable(glfw)
 
-	set(GLFW_BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-	set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-	set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-	set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-	# Hide GLFW symbols
-	if (GLFW_BUILD_SHARED_LIBS)
-		set_property(TARGET glfw PROPERTY C_VISIBILITY_PRESET hidden)
-	endif()
+# Hide GLFW symbols
+if (GLFW_BUILD_SHARED_LIBS)
+	set_property(TARGET glfw PROPERTY C_VISIBILITY_PRESET hidden)
+endif()
 
-	set(GLFW_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/glfw-src/include)
-	include_directories(${GLFW_INCLUDE_DIR})
+set(GLFW_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/glfw-src/include)
+include_directories(${GLFW_INCLUDE_DIR})
 
-	# Comment line below so it builds on unix environment. Review it later
-	# find_package(GLFW REQUIRED)
-	#endregion GLFW
+# Comment line below so it builds on unix environment. Review it later
+# find_package(GLFW REQUIRED)
+#endregion GLFW
 
-	#region GLAD
-	set(GLAD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/glad)
+#region GLAD
+set(GLAD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/glad)
 
-	add_library(
+add_library(
 		glad
 		STATIC
 		${GLAD_LIB_PATH}/src/glad.c)
 
-	include_directories(${GLAD_LIB_PATH}/include)
+set_property(TARGET glad PROPERTY C_VISIBILITY_PRESET hidden)
+include_directories(${GLAD_LIB_PATH}/include)
 
-	# Hide GLAD symbols
-	set_property(TARGET glad PROPERTY C_VISIBILITY_PRESET hidden)
-	#endregion GLAD
+#endregion GLAD
 #endregion Dependencies
 
 include_directories(include/umbra)
@@ -80,18 +79,18 @@ add_library(
 
 	SHARED
 
-		lib/stb/stb_image.cpp
+	lib/stb/stb_image.cpp
 
-		include/umbra/file_system.h
-		include/umbra/export_macros.h
-		include/umbra/umath.h
-		include/umbra/umbragl.h
-		include/umbra/umbra.h
+	include/umbra/file_system.h
+	include/umbra/export_macros.h
+	include/umbra/umath.h
+	include/umbra/umbragl.h
+	include/umbra/umbra.h
 
-		src/uwindow.c
-		src/umbragl.c
-		src/umath.c
-		src/umbra.c
+	src/uwindow.c
+	src/umbragl.c
+	src/umath.c
+	src/umbra.c
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
@@ -99,10 +98,11 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glad)
 
 target_include_directories(
 	${PROJECT_NAME}
-	
+
 	PUBLIC include/umbra
-	PRIVATE lib/freetype
-	PRIVATE lib/glad/include
+	PUBLIC lib/freetype
+	PUBLIC lib/glad/include
+	PUBLIC ${GLFW_INCLUDE_DIR}
 	PRIVATE lib/stb
 )
 
