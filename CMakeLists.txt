@@ -4,13 +4,16 @@ include(FetchContent)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clangd code completion
 
+cmake_policy(SET CMP0063 NEW) # Allows hidding static symbols when exporting library
+
+# Compilation Flags
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_FLAGS "-Wno-attributes -fPIC")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set (CMAKE_CXX_FLAGS "-fpermissive -fPIC")
+set(CMAKE_CXX_FLAGS "-fpermissive -fPIC")
 
 project(
 		umbra
@@ -37,10 +40,15 @@ add_definitions(-DU_SHADERS_DIR="${SHADERS_DIR}") # To enable access in code
 
 	FetchContent_MakeAvailable(glfw)
 
-	set(GLFW_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+	set(GLFW_BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
 	set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 	set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 	set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+	# Hide GLFW symbols
+	if (GLFW_BUILD_SHARED_LIBS)
+		set_property(TARGET glfw PROPERTY C_VISIBILITY_PRESET hidden)
+	endif()
 
 	set(GLFW_INCLUDE_DIR ${CMAKE_BINARY_DIR}/_deps/glfw-src/include)
 	include_directories(${GLFW_INCLUDE_DIR})
@@ -58,6 +66,9 @@ add_definitions(-DU_SHADERS_DIR="${SHADERS_DIR}") # To enable access in code
 		${GLAD_LIB_PATH}/src/glad.c)
 
 	include_directories(${GLAD_LIB_PATH}/include)
+
+	# Hide GLAD symbols
+	set_property(TARGET glad PROPERTY C_VISIBILITY_PRESET hidden)
 	#endregion GLAD
 #endregion Dependencies
 
@@ -83,15 +94,16 @@ add_library(
 		src/umbra.c
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw glad)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad)
 
 target_include_directories(
 	${PROJECT_NAME}
 	
 	PUBLIC include/umbra
-	private lib/freetype
-	private lib/glad/include
-	private lib/stb
+	PRIVATE lib/freetype
+	PRIVATE lib/glad/include
+	PRIVATE lib/stb
 )
 
 # TODO: Copy on changes to resource assets

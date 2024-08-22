@@ -8,5 +8,5 @@
         #define UMBRA_API __declspec(dllimport)
     #endif
 #else
-    #define UMBRA_API // TODO: Unix shared library
+    #define UMBRA_API __attribute__((visibility("default"))) // Make library symbols visible
 #endif
