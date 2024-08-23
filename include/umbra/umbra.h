@@ -4,6 +4,7 @@
 #include "export_macros.h"
 #include "umath.h"
 #include "umbragl.h"
+#include "uinput.h"
 
 /* Structure defitions */
 #define MAX_SUPPORTED_RENDERERS 8
@@ -21,6 +22,7 @@ typedef struct UCoreContext
 {
     UWindow window;
     URenderer renderer;
+    UInputHandler input;
 
 } UCoreContext;
 
@@ -49,6 +51,9 @@ UMBRA_API UMat4x4 U_Translate(const UMat4x4 mat, const UVec3 vec3); // redefine 
 UMBRA_API UMat4x4 U_Scale(const UMat4x4 mat, const UVec3 vec3);
 UMBRA_API UMat4x4 U_MatMult(const UMat4x4 matA, const UMat4x4 matB);
 UMBRA_API UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
+
+/** Input */
+UMBRA_API ui32 U_IsKeyDown(ui32 key);
 
 #ifdef __cplusplus
 }

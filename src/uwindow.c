@@ -46,6 +46,9 @@ bool U_InitWindow(const char* title, int width, int height)
 	// Set window clip space
 	U_SetViewport(&UCORE.renderer, 0, width, height, 0, 1, -1);
 
+	// Set input callback
+	glfwSetKeyCallback(glfw_handler, &U_KeyCallback);
+
 	return true;
 }
 

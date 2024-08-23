@@ -85,11 +85,13 @@ add_library(
 	include/umbra/export_macros.h
 	include/umbra/umath.h
 	include/umbra/umbragl.h
+	include/umbra/uinput.h
 	include/umbra/umbra.h
 
 	src/uwindow.c
 	src/umbragl.c
 	src/umath.c
+	src/uinput.c
 	src/umbra.c
 )
 
