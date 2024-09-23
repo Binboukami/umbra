@@ -1,4 +1,5 @@
 #include "uinput.h"
+#include "GLFW/glfw3.h"
 #include "umbra.h"
 #include <stdio.h>
 

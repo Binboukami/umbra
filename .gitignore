@@ -4,3 +4,4 @@
 build
 cmake-*
 main.c*
+compile_commands.json

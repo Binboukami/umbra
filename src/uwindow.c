@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "uinput.h"
 #include "umbra.h"
 
 bool U_InitWindow(const char* title, int width, int height)
@@ -45,6 +46,12 @@ bool U_InitWindow(const char* title, int width, int height)
 
 	// Set window clip space
 	U_SetViewport(&UCORE.renderer, 0, width, height, 0, 1, -1);
+
+	// Ensure key states are initialized to false
+	for(int i = 0; i < U_NUM_SUPPORTED_KEYS; i++)
+	{
+		UCORE.input.current_frame_keys[i] = false;
+	}
 
 	// Set input callback
 	glfwSetKeyCallback(glfw_handler, &U_KeyCallback);
