@@ -3,20 +3,12 @@
 /* Macro definitions */
 #include "export_macros.h"
 #include "umath.h"
-#include "umbragl.h"
 #include "uinput.h"
+#include "urenderer.h"
+#include "umbragl.h"
 
 /* Structure defitions */
 #define MAX_SUPPORTED_RENDERERS 8
-
-typedef struct UWindow
-{
-    GLFWwindow* _glfw_handler;
-    const char* title;
-    int width;
-    int height;
-    bool exit;
-} UWindow;
 
 typedef struct UCoreContext
 {
@@ -28,24 +20,34 @@ typedef struct UCoreContext
 
 extern UCoreContext UCORE; // Global library context
 
+enum UProjectionType {
+	U_ORTHO = 0,
+	U_PERSPECTIVE = 1
+};
+
+typedef struct UCamera {
+	UVec3 position;
+	enum UProjectionType projection;
+	f32 fov;
+} UCamera;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Function definitions */
 
-/* Core API */
-// TODO
-
 /* Window API */
-
 UMBRA_API bool U_InitWindow(const char* title, int width, int height);
-UMBRA_API GLFWwindow* U_GetGLFWHandler();
 UMBRA_API bool U_ShouldCloseWindow();
-UMBRA_API void U_PollWindowEvents();
 UMBRA_API void U_CloseWindow();
 
-/* Umbra Math */
+/* General */
+UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
+UMBRA_API void U_BeginDrawing(UCamera camera);
+UMBRA_API void U_EndDrawing();
+
+/* Umbra Math redefines for bundling */
 UMBRA_API UMat4x4 U_Mat4x4(const f32 scalar); // redefine export
 UMBRA_API UMat4x4 U_Translate(const UMat4x4 mat, const UVec3 vec3); // redefine export
 UMBRA_API UMat4x4 U_Scale(const UMat4x4 mat, const UVec3 vec3);

@@ -19,71 +19,36 @@
 #define U_DEFAULT_VERTEX_ATTR_POSITION_IDX 0
 #define U_DEFAULT_VERTEX_ATTR_COLOR_IDX 1
 
-typedef ui32 U_SHADER_TYPE;
-
-typedef struct Transform
-{
-    UVec2 position;
-    UVec2 size;
-} Transform;
-
 typedef ui32 TextureID;
 
-typedef struct Texture
+typedef struct UWindow
 {
-    TextureID id;
-} Texture;
-
-typedef struct UVertex
-{
-    UVec3 position;
-    UVec3 color;
-} UVertex;
-
-typedef struct URenderer {
-    ui8 id;
-
-    ui32 vbo;
-    ui32 ebo;
-    ui32 vao;
-
-    bool use_ebo;
-
-    ui32 vertex_count;
-    ui32 index_count;
-    UVertex buffer[U_MAX_VERTEX];
-    ui32 index_buffer[U_MAX_VERTEX * 2];
-
-    ui64 shader_id;
-} URenderer;
+    GLFWwindow* _glfw_handler;
+    const char* title;
+    int width;
+    int height;
+    bool exit;
+} UWindow;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Function definitions */
-/* General */
-UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
-UMBRA_API void U_BeginDrawing();
-UMBRA_API void U_EndDrawing();
-UMBRA_API void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha);
-UMBRA_API void U_SetViewport(URenderer* renderer, f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far);
-
-/* Drawing: Primitives */
-UMBRA_API void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color);
-UMBRA_API void U_DrawQuad(const UVec3 position, const f32 size, const UVec3 color);
-UMBRA_API void U_DrawRect(const UVec3 position, const f32 width, const f32 height, const UVec3 color);
-
-/* Shader */
-UMBRA_API i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type);
-UMBRA_API void U_UseShader(URenderer* renderer, ui32 shader_id);
-UMBRA_API ui32 U_CompileShaderProgram(i32 vertex_shader, i32 fragment_shader); // todo: This function consumes the shader src, making them unusable after call
-
 /* OpenGL Wrapper functions */
+UMBRA_API GLFWwindow* U_GetGLFWHandler();
+UMBRA_API void U_PollWindowEvents();
+
 UMBRA_API void U_BindVertexArray(ui32 vao);
 UMBRA_API void U_BindTexture2D(TextureID id);
 UMBRA_API void U_EnableBlending();
 UMBRA_API void U_DisableBlending();
+UMBRA_API void U_SwapBuffers(UWindow window);
+
+UMBRA_API void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha);
+
+UMBRA_API void U_SetViewport(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far);
+UMBRA_API void U_SetDepthRangeF(f32 near, f32 far);
+
 
 #ifdef __cplusplus
 }

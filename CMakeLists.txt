@@ -86,9 +86,11 @@ add_library(
 	include/umbra/umath.h
 	include/umbra/umbragl.h
 	include/umbra/uinput.h
+	include/umbra/urenderer.h
 	include/umbra/umbra.h
 
 	src/uwindow.c
+	src/urenderer.c
 	src/umbragl.c
 	src/umath.c
 	src/uinput.c

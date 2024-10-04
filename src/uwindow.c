@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "uinput.h"
 #include "umbra.h"
 
@@ -44,8 +43,10 @@ bool U_InitWindow(const char* title, int width, int height)
 	// Init default renderering context
 	U_InitRenderer(&UCORE.renderer, true /* TODO: Load value from flag */);
 
+	glEnable(GL_DEPTH_TEST);
+
 	// Set window clip space
-	U_SetViewport(&UCORE.renderer, 0, width, height, 0, 1, -1);
+	U_SetViewport(0, width, height, 0, 1, -1);
 
 	// Ensure key states are initialized to false
 	for(int i = 0; i < U_NUM_SUPPORTED_KEYS; i++)
@@ -61,15 +62,10 @@ bool U_InitWindow(const char* title, int width, int height)
 
 bool U_ShouldCloseWindow()
 {
-	glfwSwapBuffers(UCORE.window._glfw_handler);
+	U_SwapBuffers(UCORE.window);
 
 	U_PollWindowEvents();
 	return glfwWindowShouldClose(UCORE.window._glfw_handler) || UCORE.window.exit;
-}
-
-void U_PollWindowEvents()
-{
-	glfwPollEvents();
 }
 
 void U_CloseWindow()
