@@ -1,10 +1,11 @@
 #include "umath.h"
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
 UMat4x4 U_Mat4x4(const f32 scalar)
 {
-    UMat4x4 matrix;
+	UMat4x4 matrix;
 
 	memset(matrix.data, 0.0f, sizeof(matrix.data));
 
@@ -66,9 +67,10 @@ UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far)
 	ortho.data[1][1] = 2 / (top - bottom);
 	ortho.data[2][2] = -2 / (far - near);
 
-	ortho.data[0][3] = -((right + left) / (right - left));
-	ortho.data[1][3] = -((top + bottom) / (top - bottom));
-	ortho.data[2][3] = - (far + near ) / 2;
+	// perspective divide, maps 0 to top left corner
+	//ortho.data[0][3] = -((right + left) / (right - left));
+	//ortho.data[1][3] = -((top + bottom) / (top - bottom));
+	//ortho.data[2][3] = - (far + near ) / 2;
 
 	return ortho;
 }
