@@ -33,7 +33,8 @@ UMat4x4 U_Scale(const UMat4x4 mat, const UVec3 vec3);
 UMat4x4 U_MatMult(const UMat4x4 matA, const UMat4x4 matB);
 
 /* Projections */
- UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
+UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far);
+UMat4x4 U_MatPerspective(f32 aspect_ratio, f32 fov, f32 near, f32 far);
 
 #ifdef __cplusplus
 }

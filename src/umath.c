@@ -72,3 +72,19 @@ UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far)
 
 	return ortho;
 }
+
+UMat4x4 U_MatPerspective(f32 aspect_ratio, f32 fov, f32 near, f32 far)
+{
+	UMat4x4 p = U_Mat4x4(1.0f);
+
+	f32 f = 1 / tan(fov/2);
+
+	p.data[0][0] = aspect_ratio * f ;
+	p.data[1][1] = f;
+	p.data[2][2] = far / (far-near);
+	p.data[2][3] = (-far * near) / (far-near);
+
+	p.data[3][2] = 1;
+
+	return p;
+}
