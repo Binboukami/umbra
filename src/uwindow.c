@@ -43,8 +43,6 @@ bool U_InitWindow(const char* title, int width, int height)
 	// Init default renderering context
 	U_InitRenderer(&UCORE.renderer, true /* TODO: Load value from flag */);
 
-	glEnable(GL_DEPTH_TEST);
-
 	// Set window clip space
 	U_SetViewport(0, width, height, 0, 1, -1);
 
