@@ -9,11 +9,11 @@ cmake_policy(SET CMP0063 NEW) # Allows hidding static symbols when exporting lib
 # Compilation Flags
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
-set(CMAKE_C_FLAGS "-Wno-attributes -fPIC")
+set(CMAKE_C_FLAGS "-Wall -g -Wno-attributes -fPIC")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-set(CMAKE_CXX_FLAGS "-fpermissive -fPIC")
+set(CMAKE_CXX_FLAGS "-Wall -g -fpermissive -fPIC")
 
 project(
 		umbra
