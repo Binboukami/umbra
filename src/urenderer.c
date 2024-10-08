@@ -21,8 +21,7 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
   U_BindVBO(renderer->vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), &renderer->buffer, GL_DYNAMIC_DRAW);
 
-  glGenVertexArrays(1, &renderer->vao);
-
+  U_GenerateVAO(&renderer->vao);
   U_BindVertexArray(renderer->vao);
 
 	if(use_ebo)
@@ -34,12 +33,10 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(renderer->index_buffer), &renderer->index_buffer, GL_DYNAMIC_DRAW);
 
   // Attrib 0: { x, y, z }
-  glEnableVertexAttribArray(U_DEFAULT_VERTEX_ATTR_POSITION_IDX);
-  glVertexAttribPointer(U_DEFAULT_VERTEX_ATTR_POSITION_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)0);
+  U_SetVertexAttribute(U_DEFAULT_VERTEX_ATTR_POSITION_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)0);
 
   // Attrib 1: { r, g, b }
-  glEnableVertexAttribArray(U_DEFAULT_VERTEX_ATTR_COLOR_IDX);
-  glVertexAttribPointer(U_DEFAULT_VERTEX_ATTR_COLOR_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)(sizeof(UVec3)));
+  U_SetVertexAttribute(U_DEFAULT_VERTEX_ATTR_COLOR_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), sizeof(UVec3));
 
   U_BindVertexArray(0);
 

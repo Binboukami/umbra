@@ -1,19 +1,67 @@
 #include "umbragl.h"
 #include "glad/glad.h"
 
+GLState G_GL_STATE = {0}; // TODO: What happens for multiple umbragl instances?
+
 void U_PollWindowEvents()
 {
 	glfwPollEvents();
 }
 
+
+void U_SetVertexAttribute(ui64 idx, i64 size, ui64 type, bool normalized, ui64 stride, ui64 offset)
+{
+  UVertextArrayObject current_vao = G_GL_STATE.vaos[G_GL_STATE.current_vao];
+
+  UVertexAttribute new_attr = { idx, size, type, normalized, stride, offset };
+
+  glVertexAttribPointer(idx, size, type, normalized, stride, (void*)(offset));
+
+  current_vao._attributes[idx] = new_attr;
+
+  if(current_vao._attrs_counter + 1 > U_MAX_VERTEX_ATTRIBUTES)
+  {
+    // todo: error out
+  }
+  
+  current_vao._attrs_counter++;
+
+  U_EnableVertexAttribute(idx);
+}
+
+void U_EnableVertexAttribute(ui64 idx)
+{
+  UVertextArrayObject current_vao = G_GL_STATE.vaos[G_GL_STATE.current_vao];
+
+  if(!current_vao.enabled_attributes[idx])
+  {
+    current_vao.enabled_attributes[idx] = true;
+    current_vao._enabled_attrs_counter++;
+  }
+
+  glEnableVertexAttribArray(idx);
+}
+
+void U_GenerateVAO(ui32* buffer)
+{
+  glGenVertexArrays(1, buffer);
+
+  UVertextArrayObject new_vao = { .id = *buffer };
+
+  G_GL_STATE._vaos_counter++;
+  G_GL_STATE.vaos[G_GL_STATE._vaos_counter] = new_vao;
+};
+
 void U_BindVertexArray(ui32 vao)
 {
   glBindVertexArray(vao);
+  G_GL_STATE.current_vao = vao;
 }
 
 void U_BindVBO(ui32 vbo)
 {
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  G_GL_STATE.current_vbo = vbo;
 }
 
 void U_BindEBO(ui32 ebo)

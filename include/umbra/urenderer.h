@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include "export_macros.h"
 #include "types.h"
 #include "umath.h"
 
@@ -37,6 +38,7 @@ typedef struct URenderer {
 extern "C" {
 #endif
 
+UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
 /* Drawing: Primitives */
 UMBRA_API void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color);
 UMBRA_API void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);

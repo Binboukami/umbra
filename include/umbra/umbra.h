@@ -44,7 +44,6 @@ UMBRA_API bool U_ShouldCloseWindow();
 UMBRA_API void U_CloseWindow();
 
 /* General */
-UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
 UMBRA_API void U_BeginDrawing(UCamera camera);
 UMBRA_API void U_EndDrawing();
 
