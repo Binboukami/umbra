@@ -67,10 +67,7 @@ UMat4x4 U_MatOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far)
 	ortho.data[1][1] = 2 / (top - bottom);
 	ortho.data[2][2] = -2 / (far - near);
 
-	// perspective divide, maps 0 to top left corner
-	//ortho.data[0][3] = -((right + left) / (right - left));
-	//ortho.data[1][3] = -((top + bottom) / (top - bottom));
-	//ortho.data[2][3] = - (far + near ) / 2;
+
 
 	return ortho;
 }
@@ -89,4 +86,14 @@ UMat4x4 U_MatPerspective(f32 aspect_ratio, f32 fov, f32 near, f32 far)
 	p.data[3][2] = 1;
 
 	return p;
+}
+
+UMat4x4 U_PerspectiveDivide(UMat4x4 mat, UVec3 origin)
+{
+	// Apply perspective divide, maps 0 to top left corner
+	mat.data[0][3] = origin.x;
+	mat.data[1][3] = origin.y;
+	mat.data[2][3] = origin.z;
+
+	return mat;
 }
