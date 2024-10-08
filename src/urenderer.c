@@ -16,19 +16,21 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
   renderer->ebo = 0;
   renderer->use_ebo = use_ebo;
 
+  // Initialize vbo data
   glGenBuffers(1, &renderer->vbo);
+  U_BindVBO(renderer->vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), &renderer->buffer, GL_DYNAMIC_DRAW);
+
   glGenVertexArrays(1, &renderer->vao);
 
-  glBindVertexArray(renderer->vao);
-  glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
+  U_BindVertexArray(renderer->vao);
 
 	if(use_ebo)
 	{
 		glGenBuffers(1, &renderer->ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer->ebo);
+    U_BindEBO(renderer->ebo);
 	}
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(renderer->buffer), &renderer->buffer, GL_DYNAMIC_DRAW);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(renderer->index_buffer), &renderer->index_buffer, GL_DYNAMIC_DRAW);
 
   // Attrib 0: { x, y, z }
@@ -39,7 +41,7 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
   glEnableVertexAttribArray(U_DEFAULT_VERTEX_ATTR_COLOR_IDX);
   glVertexAttribPointer(U_DEFAULT_VERTEX_ATTR_COLOR_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), (void*)(sizeof(UVec3)));
 
-  glBindVertexArray(0);
+  U_BindVertexArray(0);
 
 	/** Set up shader **/
 	i32 vert_shader = U_LoadShader(U_CONFIG_SHADERS_DIR"/default.vert.glsl", U_VERTEX_SHADER);
@@ -53,7 +55,7 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 
 	i32 shader = U_CompileShaderProgram(vert_shader, frag_shader);
 
-	U_UseShader(renderer, shader);
+  renderer->shader_id = shader;
 }
 
 

@@ -9,7 +9,11 @@ void U_BeginDrawing(UCamera camera)
 
 	renderer->vertex_count = 0;
   renderer->index_count = 0;
+
+	U_BindVBO(renderer->vbo);
   U_BindVertexArray(renderer->vao);
+
+	U_UseShader(renderer, renderer->shader_id);
 
   UMat4x4 projection;
 
