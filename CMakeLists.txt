@@ -88,12 +88,14 @@ add_library(
 	include/umbra/uinput.h
 	include/umbra/urenderer.h
 	include/umbra/umbra.h
+	include/umbra/ugui.h
 
 	src/uwindow.c
 	src/urenderer.c
 	src/umbragl.c
 	src/umath.c
 	src/uinput.c
+	src/ugui.c
 	src/umbra.c
 )
 
