@@ -98,10 +98,8 @@ void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color)
 		&model_mat.data[0][0]);
 }
 
-void U_DrawQuad(const UVec3 position, const f32 size, const UVec3 color)
+void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const UVec3 color)
 {
-  URenderer *renderer = &UCORE.renderer;
-
 	ui32 prev_vert_count = renderer->vertex_count;
 
   renderer->buffer[renderer->vertex_count].position = position;

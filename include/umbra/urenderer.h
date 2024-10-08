@@ -39,7 +39,7 @@ extern "C" {
 
 /* Drawing: Primitives */
 UMBRA_API void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color);
-UMBRA_API void U_DrawQuad(const UVec3 position, const f32 size, const UVec3 color);
+UMBRA_API void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
 UMBRA_API void U_DrawRect(const UVec3 position, const f32 width, const f32 height, const UVec3 color);
 
 UMBRA_API void U_DrawCube(const UVec3 position, const f32 size, const UVec3 color);
