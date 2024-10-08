@@ -1,4 +1,6 @@
 #include "umbra.h"
+#include "umbragl.h"
+#include "urenderer.h"
 
 UCoreContext UCORE = {0};
 
@@ -8,7 +10,7 @@ void U_BeginDrawing(UCamera camera)
 	URenderer* renderer = &UCORE.renderer;
 
 	renderer->vertex_count = 0;
-  renderer->index_count = 0;
+	renderer->index_count = 0;
 
 	U_BindVBO(renderer->vbo);
   U_BindVertexArray(renderer->vao);
@@ -17,14 +19,29 @@ void U_BeginDrawing(UCamera camera)
 
   UMat4x4 projection;
 
+	f32 clip_scaling = ORTHO_CLIPPING_SPACE;
+
   if(camera.projection == U_ORTHO)
   {
-  	projection = U_MatOrtho(0, window->width, window->height, 0, 1, -1);
+		glDisable(GL_DEPTH_TEST);
+  	projection = U_MatOrtho(0, window->width, window->height, 0, -clip_scaling, clip_scaling);
   }
   else
   {
-  	projection = U_MatPerspective((window->width / window->height), camera.fov, camera.position.z, 1);
+		glEnable(GL_DEPTH_TEST);
+  	projection = U_MatPerspective((window->width / window->height), camera.fov, -clip_scaling, clip_scaling);
   }
+
+	UMat4x4 view_mat = U_Mat4x4(1.0f);
+
+	// Apply offset to center on view matrix
+	UVec3 view_translate = { -camera.position.x, -camera.position.y, -camera.position.z }; // Camera position
+	view_mat = U_Translate(view_mat, view_translate);
+
+	glUniformMatrix4fv(
+		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_VIEW"),
+		1, GL_TRUE,
+		&view_mat.data[0][0]);
 
   glUniformMatrix4fv(
       glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_PROJECTION"),
@@ -37,22 +54,10 @@ void U_EndDrawing()
 	URenderer* renderer = &UCORE.renderer;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  // glClearDepth(0.0f);
 
   if(renderer->vertex_count > 0)
   {
-		UMat4x4 view_mat = U_Mat4x4(1.0f);
-
-		// Apply offset to center on view matrix
-		UVec3 view_translate = { 0.0f, 0.0f, -0.9f }; // Camera position?
-		view_mat = U_Translate(view_mat, view_translate);
-
-		glUniformMatrix4fv(
-			glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_VIEW"),
-			1, GL_TRUE,
-			&view_mat.data[0][0]);
-
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(renderer->buffer), &renderer->buffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(renderer->buffer), &renderer->buffer);
 
 		if(renderer->use_ebo)
 		{

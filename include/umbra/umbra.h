@@ -9,6 +9,7 @@
 
 /* Structure defitions */
 #define MAX_SUPPORTED_RENDERERS 8
+#define ORTHO_CLIPPING_SPACE 10.0f
 
 typedef struct UCoreContext
 {
