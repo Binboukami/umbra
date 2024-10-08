@@ -39,16 +39,23 @@ UMBRA_API GLFWwindow* U_GetGLFWHandler();
 UMBRA_API void U_PollWindowEvents();
 
 UMBRA_API void U_BindVertexArray(ui32 vao);
+/**
+    A call to glBindBuffer to set the GL_ARRAY_BUFFER binding is NOT modifying the current VAO's state!
+    https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object
+*/
+UMBRA_API void U_BindVBO(ui32 vbo);
+UMBRA_API void U_BindEBO(ui32 ebo);
 UMBRA_API void U_BindTexture2D(TextureID id);
 UMBRA_API void U_EnableBlending();
 UMBRA_API void U_DisableBlending();
+UMBRA_API void U_EnableDepthTest();
+UMBRA_API void U_DisableDepthTest();
 UMBRA_API void U_SwapBuffers(UWindow window);
 
 UMBRA_API void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha);
 
 UMBRA_API void U_SetViewport(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far);
 UMBRA_API void U_SetDepthRangeF(f32 near, f32 far);
-
 
 #ifdef __cplusplus
 }
