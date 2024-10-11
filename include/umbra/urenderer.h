@@ -9,8 +9,6 @@
     #define U_MAX_VERTEX 2048
 #endif
 
-typedef ui32 U_SHADER_TYPE;
-
 typedef struct UVertex
 {
     UVec3 position;
@@ -47,8 +45,6 @@ UMBRA_API void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 w
 UMBRA_API void U_DrawCube(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
 
 /* Shader */
-UMBRA_API i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type);
-UMBRA_API ui32 U_CompileShaderProgram(i32 vertex_shader, i32 fragment_shader); // todo: This function consumes the shader src, making them unusable after call
 UMBRA_API void U_UseShader(URenderer* renderer, ui32 shader_id);
 
 #ifdef __cplusplus

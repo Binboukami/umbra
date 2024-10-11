@@ -1,3 +1,4 @@
+#include <file_system.h>
 #include "umbragl.h"
 #include "glad/glad.h"
 
@@ -7,7 +8,6 @@ void U_PollWindowEvents()
 {
 	glfwPollEvents();
 }
-
 
 void U_SetVertexAttribute(ui64 idx, i64 size, ui64 type, bool normalized, ui64 stride, ui64 offset)
 {
@@ -72,6 +72,105 @@ void U_BindEBO(ui32 ebo)
 void U_BindTexture2D(TextureID id)
 {
   glBindTexture(GL_TEXTURE_2D, id);
+}
+
+/** This function consumes the shader src, making them unusable after call */
+ui32 U_CompileShaderProgram(i32 vertex_shader, i32 fragment_shader)
+{
+  ui32
+  shader = glCreateProgram();
+
+  glAttachShader(shader, vertex_shader);
+  glAttachShader(shader, fragment_shader);
+
+  glLinkProgram(shader);
+
+  int success;
+  char infoLog[512];
+
+  glGetProgramiv(shader, GL_LINK_STATUS, &success);
+
+  if(!success) {
+      glGetProgramInfoLog(shader, 512, NULL, infoLog);
+      fprintf(stderr, "ERROR::SHADER::PROGRAM_COMPILATION_FAILED\n%s", infoLog);
+  }
+
+  glDetachShader(shader, vertex_shader);
+  glDeleteShader(vertex_shader);
+
+  glDetachShader(shader, fragment_shader);
+  glDeleteShader(fragment_shader);
+
+  return shader;
+}
+
+i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
+{
+  FILE *file_ptr;
+
+  /** Load shader source from file */
+
+  file_ptr = fopen(filepath, "r");
+
+  if(file_ptr == NULL)
+  {
+    fprintf(stderr, "Could not open shader file: '%s'\n", filepath);
+    return -1;
+  }
+
+  long buff_size = file_size(file_ptr);
+
+  if(buff_size == -1)
+  {
+    fprintf(stderr, "Could not read file size from '%s'\n", filepath);
+    return -2;
+  }
+
+  /** Intialize memory to prevent erros when writing to the buffer */
+  char *shad_src = memset((char*)malloc(sizeof(char) * (buff_size + 1)), '\0', buff_size + 1);
+
+  if(shad_src == NULL)
+  {
+    /** Error intializing memory */
+		return -3;
+  }
+
+  fread(shad_src, sizeof(char), buff_size, file_ptr);
+
+  if(ferror(file_ptr) != 0)
+  {
+    fclose(file_ptr);
+    free(shad_src);
+
+    fprintf(stderr, "Unexpected error while reading file");
+    return -3;
+  }
+
+  /** Compilation step */
+
+  ui32 gl_shader;
+  gl_shader = glCreateShader(shader_type);
+
+  glShaderSource(gl_shader, 1, &shad_src, NULL);
+  glCompileShader(gl_shader);
+
+  free(shad_src);
+
+  int  success;
+  char infoLog[512];
+  glGetShaderiv(gl_shader, GL_COMPILE_STATUS, &success);
+
+  if(!success)
+  {
+    glGetShaderInfoLog(gl_shader, 512, NULL, infoLog);
+		char* stype = shader_type == U_VERTEX_SHADER ? "VERTEX" : "FRAGMENT";
+
+    fprintf(stderr, "ERROR::%s_SHADER::COMPILATION_FAILED\n%s", stype, infoLog);
+
+    return -4;
+  }
+
+  return gl_shader;
 }
 
 void U_EnableBlending()

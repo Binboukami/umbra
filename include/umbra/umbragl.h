@@ -25,6 +25,7 @@
 #define U_DEFAULT_VERTEX_ATTR_COLOR_IDX 1
 
 typedef ui32 TextureID;
+typedef ui32 U_SHADER_TYPE;
 
 typedef struct UVertexAttribute
 {
@@ -89,6 +90,11 @@ UMBRA_API void U_BindVertexArray(ui32 vao);
 UMBRA_API void U_BindVBO(ui32 vbo);
 UMBRA_API void U_BindEBO(ui32 ebo);
 UMBRA_API void U_BindTexture2D(TextureID id);
+
+// Shading
+UMBRA_API i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type);
+UMBRA_API ui32 U_CompileShaderProgram(i32 vertex_shader, i32 fragment_shader); // todo: This function consumes the shader src, making them unusable after call
+
 // State setting
 UMBRA_API void U_EnableBlending();
 UMBRA_API void U_DisableBlending();
