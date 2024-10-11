@@ -40,11 +40,11 @@ extern "C" {
 
 UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
 /* Drawing: Primitives */
-UMBRA_API void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color);
+UMBRA_API void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
 UMBRA_API void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
-UMBRA_API void U_DrawRect(const UVec3 position, const f32 width, const f32 height, const UVec3 color);
+UMBRA_API void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color);
 
-UMBRA_API void U_DrawCube(const UVec3 position, const f32 size, const UVec3 color);
+UMBRA_API void U_DrawCube(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
 
 /* Shader */
 UMBRA_API i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type);

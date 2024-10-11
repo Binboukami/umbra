@@ -57,10 +57,8 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
 }
 
 
-void U_DrawTris(const UVec3 position, const f32 size, const UVec3 color)
+void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
 {
-	URenderer *renderer = &UCORE.renderer;
-
 	ui32 prev_vert_count = renderer->vertex_count;
   renderer->buffer[renderer->vertex_count].position = position;
 
@@ -160,10 +158,8 @@ void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const
 		&model_mat.data[0][0]);
 }
 
-void U_DrawRect(const UVec3 position, const f32 width, const f32 height, const UVec3 color)
+void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color)
 {
-	URenderer* renderer = &UCORE.renderer;
-
 	ui32 prev_vert_count = renderer->vertex_count;
 
   renderer->buffer[renderer->vertex_count].position = position;
@@ -224,10 +220,8 @@ void U_DrawRect(const UVec3 position, const f32 width, const f32 height, const U
 		&model_mat.data[0][0]);
 }
 
-void U_DrawCube(const UVec3 position, const f32 size, const UVec3 color)
+void U_DrawCube(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
 {
-	URenderer* renderer = &UCORE.renderer;
-
 	ui32 prev_vert_count = renderer->vertex_count;
 
 	// front face
