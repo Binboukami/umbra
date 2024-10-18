@@ -12,4 +12,5 @@ typedef uint64_t ui64;
 
 typedef float f32;
 typedef double f64;
+typedef long i128;
 typedef long double f128;
