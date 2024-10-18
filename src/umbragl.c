@@ -1,4 +1,5 @@
 #include <file_system.h>
+#include "glad/glad.h"
 #include "umbragl.h"
 #include <stdlib.h>
 #include <string.h>
@@ -191,6 +192,16 @@ void U_DisableDepthTest()
   glDisable(GL_DEPTH_TEST);
 }
 
+void U_EnableScissor()
+{
+  glEnable(GL_SCISSOR_TEST);
+}
+
+void U_DisableScissor()
+{
+  glDisable(GL_SCISSOR_TEST);
+}
+
 void U_SwapBuffers(UWindow window)
 {
   glfwSwapBuffers(window._glfw_handler);
@@ -220,6 +231,5 @@ void U_SetDepthRangeF(const f32 near, const f32 far)
 
 void U_Scissor(f32 x, f32 y, f32 width, f32 height)
 {
-  glEnable(GL_SCISSOR_TEST);
   glScissor(x, y, width, height);
 }
