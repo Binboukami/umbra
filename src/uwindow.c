@@ -44,7 +44,7 @@ bool U_InitWindow(const char* title, int width, int height)
 	U_InitRenderer(&UCORE.renderer, true /* TODO: Load value from flag */);
 
 	// Set window clip space
-	U_SetViewport(0, width, height, 0, 1, -1);
+	U_SetViewport3D(0, 0, width, height, 1, -1);
 
 	// Ensure key states are initialized to false
 	for(int i = 0; i < U_NUM_SUPPORTED_KEYS; i++)

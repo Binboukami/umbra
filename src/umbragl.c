@@ -202,9 +202,14 @@ void U_ClearColor(const f32 red, const f32 green, const f32 blue, const f32 alph
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void U_SetViewport(const f32 left, const f32 right, const f32 bottom, const f32 top, const f32 clip_near, const f32 clip_far)
+void U_SetViewport(const f32 left, const f32 top, const f32 right, const f32 bottom)
 {
   glViewport(left, top, right, bottom);
+}
+
+void U_SetViewport3D(const f32 left, const f32 top, const f32 right, const f32 bottom, const f32 clip_near, const f32 clip_far)
+{
+  U_SetViewport(left, top, right, bottom);
   U_SetDepthRangeF(clip_near, clip_far);
 }
 

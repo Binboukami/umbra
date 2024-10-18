@@ -104,7 +104,8 @@ UMBRA_API void U_DisableDepthTest();
 // Rendering
 UMBRA_API void U_SwapBuffers(UWindow window);
 UMBRA_API void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha);
-UMBRA_API void U_SetViewport(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far);
+UMBRA_API void U_SetViewport(const f32 left, const f32 right, const f32 bottom, const f32 top);
+UMBRA_API void U_SetViewport3D(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far);
 UMBRA_API void U_SetDepthRangeF(f32 near, f32 far);
 UMBRA_API void U_Scissor(f32 x, f32 y, f32 width, f32 height);
 
