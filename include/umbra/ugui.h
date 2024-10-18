@@ -17,9 +17,15 @@ extern "C" {
 #endif
 
 UMBRA_API void InitGUI();
-UMBRA_API void DoButton(const UVec3 position, const f32 size, const UVec3 color);
 UMBRA_API void BeginGUI(ui32 width, ui32 height);
 UMBRA_API void EndGUI();
+
+// Layout
+// TODO: Layout can be set with a combination of calls to 
+// 	U_SetViewport() and U_Scissor();
+
+// Widgets
+UMBRA_API void DoButton(const UVec3 position, const f32 size, const UVec3 color);
 
 #ifdef __cplusplus
 }

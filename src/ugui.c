@@ -29,7 +29,8 @@ void BeginGUI(ui32 width, ui32 height)
 
   UMat4x4 projection = U_MatOrtho(0, width, height, 0, -ORTHO_CLIPPING_SPACE, ORTHO_CLIPPING_SPACE);
 
-	// Apply perspective divide, maps 0 to top left corner
+	// Apply perspective divide, maps 0 to top left corner of the current viewport
+	// TODO: Test for viewports that do not start at (0,0)
 	UVec3 origin = {
 		((0 + width)/(width - 0)) * -1.0f,												// x
 		((0 + height) / (height - 0)),														// y
