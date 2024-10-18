@@ -212,3 +212,9 @@ void U_SetDepthRangeF(const f32 near, const f32 far)
 {
   glDepthRangef(near, far);
 }
+
+void U_Scissor(f32 x, f32 y, f32 width, f32 height)
+{
+  glEnable(GL_SCISSOR_TEST);
+  glScissor(x, y, width, height);
+}
