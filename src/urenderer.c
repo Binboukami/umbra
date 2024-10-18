@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "umbra.h"
 #include "umbragl.h"
 #include "urenderer.h"
