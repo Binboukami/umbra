@@ -16,7 +16,7 @@
 
 #define U_MAX_VERTEX_ATTRIBUTES GL_MAX_VERTEX_ATTRIBS - 1
 
-/* OpengGL Redefines */
+/* OpenGL Redefines */
 #define U_FRAGMENT_SHADER 0x8B30 // Redefine for 'GL_FRAGMENT_SHADER'
 #define U_VERTEX_SHADER 0x8B31 // Redefine for 'GL_VERTEX_SHADER'
 
@@ -46,7 +46,7 @@ typedef struct UVertexArrayObject
     ui64 _enabled_attrs_counter;
     UVertexAttribute _attributes[U_MAX_VERTEX_ATTRIBUTES];
 
-} UVertextArrayObject;
+} UVertexArrayObject;
 
 
 typedef struct UWindow
@@ -64,7 +64,7 @@ typedef struct GLState
     ui8 current_vbo;
 
     ui8 _vaos_counter;
-    UVertextArrayObject vaos[U_MAX_BUFFERS];
+    UVertexArrayObject vaos[U_MAX_BUFFERS];
     ui8 vbos[U_MAX_BUFFERS];
 } GLState;
 
