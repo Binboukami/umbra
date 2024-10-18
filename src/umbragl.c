@@ -1,6 +1,7 @@
 #include <file_system.h>
 #include "umbragl.h"
-#include "glad/glad.h"
+#include <stdlib.h>
+#include <string.h>
 
 GLState G_GL_STATE = {0}; // TODO: What happens for multiple umbragl instances?
 
@@ -9,9 +10,9 @@ void U_PollWindowEvents()
 	glfwPollEvents();
 }
 
-void U_SetVertexAttribute(ui64 idx, i64 size, ui64 type, bool normalized, ui64 stride, ui64 offset)
+void U_SetVertexAttribute(const ui64 idx, const i64 size, const ui64 type, const bool normalized, const ui64 stride, const ui64 offset)
 {
-  UVertextArrayObject current_vao = G_GL_STATE.vaos[G_GL_STATE.current_vao];
+  UVertexArrayObject current_vao = G_GL_STATE.vaos[G_GL_STATE.current_vao];
 
   UVertexAttribute new_attr = { idx, size, type, normalized, stride, offset };
 
@@ -29,9 +30,9 @@ void U_SetVertexAttribute(ui64 idx, i64 size, ui64 type, bool normalized, ui64 s
   U_EnableVertexAttribute(idx);
 }
 
-void U_EnableVertexAttribute(ui64 idx)
+void U_EnableVertexAttribute(const ui64 idx)
 {
-  UVertextArrayObject current_vao = G_GL_STATE.vaos[G_GL_STATE.current_vao];
+  UVertexArrayObject current_vao = G_GL_STATE.vaos[G_GL_STATE.current_vao];
 
   if(!current_vao.enabled_attributes[idx])
   {
@@ -46,30 +47,30 @@ void U_GenerateVAO(ui32* buffer)
 {
   glGenVertexArrays(1, buffer);
 
-  UVertextArrayObject new_vao = { .id = *buffer };
+  const UVertexArrayObject new_vao = { .id = *buffer };
 
   G_GL_STATE._vaos_counter++;
   G_GL_STATE.vaos[G_GL_STATE._vaos_counter] = new_vao;
 };
 
-void U_BindVertexArray(ui32 vao)
+void U_BindVertexArray(const ui32 vao)
 {
   glBindVertexArray(vao);
   G_GL_STATE.current_vao = vao;
 }
 
-void U_BindVBO(ui32 vbo)
+void U_BindVBO(const ui32 vbo)
 {
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   G_GL_STATE.current_vbo = vbo;
 }
 
-void U_BindEBO(ui32 ebo)
+void U_BindEBO(const ui32 ebo)
 {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 }
 
-void U_BindTexture2D(TextureID id)
+void U_BindTexture2D(const TextureID id)
 {
   glBindTexture(GL_TEXTURE_2D, id);
 }
@@ -104,13 +105,10 @@ ui32 U_CompileShaderProgram(i32 vertex_shader, i32 fragment_shader)
   return shader;
 }
 
-i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
+i32 U_LoadShader(const char* filepath, const U_SHADER_TYPE shader_type)
 {
-  FILE *file_ptr;
-
   /** Load shader source from file */
-
-  file_ptr = fopen(filepath, "r");
+  FILE *file_ptr = fopen(filepath, "r");
 
   if(file_ptr == NULL)
   {
@@ -118,7 +116,7 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
     return -1;
   }
 
-  long buff_size = file_size(file_ptr);
+  const i128 buff_size = file_size(file_ptr);
 
   if(buff_size == -1)
   {
@@ -148,8 +146,7 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
 
   /** Compilation step */
 
-  ui32 gl_shader;
-  gl_shader = glCreateShader(shader_type);
+  ui32 gl_shader = glCreateShader(shader_type);
 
   glShaderSource(gl_shader, 1, &shad_src, NULL);
   glCompileShader(gl_shader);
@@ -157,20 +154,20 @@ i32 U_LoadShader(const char* filepath, U_SHADER_TYPE shader_type)
   free(shad_src);
 
   int  success;
-  char infoLog[512];
   glGetShaderiv(gl_shader, GL_COMPILE_STATUS, &success);
 
   if(!success)
   {
+    char infoLog[512];
     glGetShaderInfoLog(gl_shader, 512, NULL, infoLog);
-		char* stype = shader_type == U_VERTEX_SHADER ? "VERTEX" : "FRAGMENT";
+		char* print_shader_type = (shader_type == U_VERTEX_SHADER) ? "VERTEX" : "FRAGMENT";
 
-    fprintf(stderr, "ERROR::%s_SHADER::COMPILATION_FAILED\n%s", stype, infoLog);
+    fprintf(stderr, "ERROR::%s_SHADER::COMPILATION_FAILED\n%s", print_shader_type, infoLog);
 
     return -4;
   }
 
-  return gl_shader;
+  return gl_shader; // gl_shader should always be > 0 at this point
 }
 
 void U_EnableBlending()
@@ -199,19 +196,19 @@ void U_SwapBuffers(UWindow window)
   glfwSwapBuffers(window._glfw_handler);
 }
 
-void U_ClearColor(f32 red, f32 green, f32 blue, f32 alpha)
+void U_ClearColor(const f32 red, const f32 green, const f32 blue, const f32 alpha)
 {
   glClearColor(red, green, blue, alpha);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void U_SetViewport(f32 left, f32 right, f32 bottom, f32 top, f32 clip_near, f32 clip_far)
+void U_SetViewport(const f32 left, const f32 right, const f32 bottom, const f32 top, const f32 clip_near, const f32 clip_far)
 {
   glViewport(left, top, right, bottom);
   U_SetDepthRangeF(clip_near, clip_far);
 }
 
-void U_SetDepthRangeF(f32 near, f32 far)
+void U_SetDepthRangeF(const f32 near, const f32 far)
 {
   glDepthRangef(near, far);
 }
