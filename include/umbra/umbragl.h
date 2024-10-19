@@ -4,14 +4,17 @@
 #include "export_macros.h"
 #include <stdbool.h>
 #include "gl_include.h"
-#include "umath.h"
 #include "types.h"
 
 #ifndef U_MAX_VERTEX
     #define U_MAX_VERTEX 2048
 #endif
-#ifndef U_MAX_BUFFERS
-    #define U_MAX_BUFFERS 255
+#ifndef U_MAX_VAO_BUFFERS
+    #define U_MAX_VAO_BUFFERS 255
+#endif
+
+#ifndef U_MAX_VBO_BUFFERS
+    #define U_MAX_VBO_BUFFERS 255
 #endif
 
 #define U_MAX_VERTEX_ATTRIBUTES GL_MAX_VERTEX_ATTRIBS - 1
@@ -64,8 +67,8 @@ typedef struct GLState
     ui8 current_vbo;
 
     ui8 _vaos_counter;
-    UVertexArrayObject vaos[U_MAX_BUFFERS];
-    ui8 vbos[U_MAX_BUFFERS];
+    UVertexArrayObject vaos[U_MAX_VAO_BUFFERS];
+    ui8 vbos[U_MAX_VBO_BUFFERS];
 } GLState;
 
 extern GLState G_GL_STATE;
