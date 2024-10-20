@@ -97,6 +97,12 @@ void U_BeginDrawing(UCamera camera)
       glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_PROJECTION"),
       1, GL_TRUE,
       &projection.data[0][0]);
+
+	UMat4x4 model_mat = U_Mat4x4(1.0f);
+	glUniformMatrix4fv(
+		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
+		1, GL_TRUE,
+		&model_mat.data[0][0]);
 }
 
 void U_EndDrawing()
@@ -154,12 +160,6 @@ void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const
 	{
 		renderer->buffer[i + prev_vert_count].color = color;
 	}
-
-	UMat4x4 model_mat = U_Mat4x4(1.0f);
-	glUniformMatrix4fv(
-		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
-		1, GL_TRUE,
-		&model_mat.data[0][0]);
 }
 
 void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const UVec3 color)
@@ -216,12 +216,6 @@ void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const
 	{
 		renderer->buffer[i + prev_vert_count].color = color;
 	}
-
-	UMat4x4 model_mat = U_Mat4x4(1.0f);
-	glUniformMatrix4fv(
-		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
-		1, GL_TRUE,
-		&model_mat.data[0][0]);
 }
 
 void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color)
@@ -278,12 +272,6 @@ void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 width, cons
 	{
 		renderer->buffer[i + prev_vert_count].color = color;
 	}
-
-	UMat4x4 model_mat = U_Mat4x4(1.0f);
-	glUniformMatrix4fv(
-		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
-		1, GL_TRUE,
-		&model_mat.data[0][0]);
 }
 
 void U_DrawCube(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color)
@@ -390,13 +378,6 @@ void U_DrawCube(URenderer* renderer, const UVec3 position, const f32 size, const
 	{
 		renderer->buffer[i + prev_vert_count].color = color;
 	}
-
-	UMat4x4 model_mat = U_Mat4x4(1.0f);
-
-	glUniformMatrix4fv(
-		glGetUniformLocation(renderer->shader_id, "UNIFORM_MATRIX_MODEL"),
-		1, GL_TRUE,
-		&model_mat.data[0][0]);
 }
 
 void U_UseShader(URenderer* renderer, ui32 shader_id)
