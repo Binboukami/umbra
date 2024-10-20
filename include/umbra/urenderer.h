@@ -9,6 +9,17 @@
     #define U_MAX_VERTEX 2048
 #endif
 
+enum UProjectionType {
+	U_ORTHO = 0,
+	U_PERSPECTIVE = 1
+};
+
+typedef struct UCamera {
+	UVec3 position;
+	enum UProjectionType projection;
+	f32 fov;
+} UCamera;
+
 typedef struct UVertex
 {
     UVec3 position;
@@ -37,6 +48,11 @@ extern "C" {
 #endif
 
 UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
+
+/* General */
+UMBRA_API void U_BeginDrawing(UCamera camera);
+UMBRA_API void U_EndDrawing();
+
 /* Drawing: Primitives */
 UMBRA_API void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
 UMBRA_API void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);

@@ -21,17 +21,6 @@ typedef struct UCoreContext
 
 extern UCoreContext UCORE; // Global library context
 
-enum UProjectionType {
-	U_ORTHO = 0,
-	U_PERSPECTIVE = 1
-};
-
-typedef struct UCamera {
-	UVec3 position;
-	enum UProjectionType projection;
-	f32 fov;
-} UCamera;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -42,10 +31,6 @@ extern "C" {
 UMBRA_API bool U_InitWindow(const char* title, int width, int height);
 UMBRA_API bool U_ShouldCloseWindow();
 UMBRA_API void U_CloseWindow();
-
-/* General */
-UMBRA_API void U_BeginDrawing(UCamera camera);
-UMBRA_API void U_EndDrawing();
 
 /* Umbra Math redefines for bundling */
 UMBRA_API UMat4x4 U_Mat4x4(const f32 scalar); // redefine export
