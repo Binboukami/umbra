@@ -44,6 +44,21 @@ void U_EnableVertexAttribute(const ui64 idx)
   glEnableVertexAttribArray(idx);
 }
 
+void U_DisableVertexAttribute(const ui64 idx)
+{
+  UVertexArrayObject current_vao = G_GL_STATE.vaos[G_GL_STATE.current_vao];
+
+  if(!current_vao.enabled_attributes[idx])
+  {
+    return;
+  }
+
+  current_vao.enabled_attributes[idx] = false;
+  current_vao._enabled_attrs_counter--;
+
+  glDisableVertexAttribArray(idx);
+}
+
 void U_GenerateVAO(ui32* buffer)
 {
   glGenVertexArrays(1, buffer);

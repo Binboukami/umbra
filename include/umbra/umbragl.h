@@ -83,6 +83,7 @@ UMBRA_API void U_PollWindowEvents();
 
 UMBRA_API void U_SetVertexAttribute(ui64 idx, i64 size, ui64 type, bool normalized, ui64 stride, ui64 offset);
 UMBRA_API void U_EnableVertexAttribute(ui64 idx);
+UMBRA_API void U_DisableVertexAttribute(ui64 idx);
 
 UMBRA_API void U_GenerateVAO(ui32* buffer);
 UMBRA_API void U_BindVertexArray(ui32 vao);
