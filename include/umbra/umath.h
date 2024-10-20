@@ -1,6 +1,5 @@
 #pragma once
 
-#include "export_macros.h"
 #include "types.h"
 
 /* Structure defitions */
