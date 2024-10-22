@@ -26,6 +26,8 @@
 /* Types and Structures definitions */
 #define U_DEFAULT_VERTEX_ATTR_POSITION_IDX 0
 #define U_DEFAULT_VERTEX_ATTR_COLOR_IDX 1
+#define U_DEFAULT_VERTEX_ATTR_TEXTURE_COORD_IDX 2
+#define U_DEFAULT_VERTEX_ATTR_TEXTURE_IDX 3
 
 typedef ui32 TextureID;
 typedef ui32 U_SHADER_TYPE;

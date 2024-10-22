@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "umbra.h"
-#include "umbragl.h"
 #include "urenderer.h"
+
+#include "stb_image.h"
 
 #define U_CONFIG_SHADERS_DIR U_SHADERS_DIR
 
@@ -11,6 +13,7 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
   renderer->vertex_count = 0;
   renderer->index_count = 0;
   renderer->shader_id = 0;
+	renderer->samples_count = 0;
 
   renderer->ebo = 0;
   renderer->use_ebo = use_ebo;
@@ -37,6 +40,12 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
   // Attrib 1: { r, g, b }
   U_SetVertexAttribute(U_DEFAULT_VERTEX_ATTR_COLOR_IDX, 3, GL_FLOAT, GL_FALSE, sizeof(UVertex), sizeof(UVec3));
 
+	// Attrib 2: { s, t }
+	U_SetVertexAttribute(U_DEFAULT_VERTEX_ATTR_TEXTURE_COORD_IDX, 2, GL_FLOAT, GL_FALSE, sizeof(UVertex), (sizeof(UVec3) * 2));
+
+	// Attrib 3: { idx }
+	U_SetVertexAttribute(U_DEFAULT_VERTEX_ATTR_TEXTURE_IDX, 1, GL_INT, GL_FALSE, sizeof(UVertex), (sizeof(UVec3) * 2) + (sizeof(UVec2)));
+
   U_BindVertexArray(0);
 
 	/** Set up shader **/
@@ -54,6 +63,36 @@ void U_InitRenderer(URenderer* renderer, ui8 use_ebo)
   renderer->shader_id = shader;
 }
 
+TextureID LoadTexture(const char* path)
+{
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0); 
+
+	if(data)
+	{
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		fprintf(stdout, "erro ao carregar texture\n");
+	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	stbi_image_free(data);
+
+	return texture;
+}
+
 void U_BeginDrawing(UCamera camera)
 {
 	UWindow* window = &UCORE.window;
@@ -61,6 +100,9 @@ void U_BeginDrawing(UCamera camera)
 
 	renderer->vertex_count = 0;
 	renderer->index_count = 0;
+
+	memset(renderer->samples, 0, sizeof(i64) * renderer->samples_count);
+	renderer->samples_count = 0;
 
 	U_BindVBO(renderer->vbo);
   U_BindVertexArray(renderer->vao);
@@ -110,6 +152,18 @@ void U_EndDrawing()
 	URenderer* renderer = &UCORE.renderer;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if(renderer->samples_count > 0)
+	{
+		glUniform1iv(
+			glGetUniformLocation(renderer->shader_id, "u_TextureArray"), renderer->samples_count,
+			renderer->samples);
+
+		for (int i = 0; i < renderer->samples_count; i++)
+		{
+			glBindTextureUnit(i, renderer->samples[i]);
+		}
+	}
 
   if(renderer->vertex_count > 0)
   {
@@ -167,14 +221,20 @@ void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const
 	ui32 prev_vert_count = renderer->vertex_count;
 
   renderer->buffer[renderer->vertex_count].position = position;
+	renderer->buffer[renderer->vertex_count].text_coord.x = 0.0f;
+	renderer->buffer[renderer->vertex_count].text_coord.y = 0.0f;
 
   renderer->buffer[1 + renderer->vertex_count].position.x = position.x + size;
   renderer->buffer[1 + renderer->vertex_count].position.y = position.y + 0.0f;
   renderer->buffer[1 + renderer->vertex_count].position.z = position.z + 0.0f;
+	renderer->buffer[1 + renderer->vertex_count].text_coord.x = 1.0f;
+	renderer->buffer[1 + renderer->vertex_count].text_coord.y = 0.0f;
 
   renderer->buffer[2 + renderer->vertex_count].position.x = position.x + size;
   renderer->buffer[2 + renderer->vertex_count].position.y = position.y + size;
   renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f;
+	renderer->buffer[2 + renderer->vertex_count].text_coord.x = 1.0f;
+	renderer->buffer[2 + renderer->vertex_count].text_coord.y = 1.0f;
 
 	if(renderer->use_ebo)
 	{
@@ -182,6 +242,9 @@ void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const
 		renderer->buffer[3 + renderer->vertex_count].position.x = position.x + 0.0f;
 		renderer->buffer[3 + renderer->vertex_count].position.y = position.y + size;
 		renderer->buffer[3 + renderer->vertex_count].position.z = position.z + 0.0f;
+		renderer->buffer[3 + renderer->vertex_count].text_coord.x = 0.0f;
+		renderer->buffer[3 + renderer->vertex_count].text_coord.y = 1.0f;
+
 
 		renderer->index_buffer[renderer->index_count] = renderer->vertex_count;
 		renderer->index_buffer[1 + renderer->index_count] = renderer->vertex_count + 1;
@@ -215,6 +278,91 @@ void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const
 	for (ui32 i = 0; i < n; i++)
 	{
 		renderer->buffer[i + prev_vert_count].color = color;
+		renderer->buffer[i + prev_vert_count].texture_id = -1;
+	}
+}
+
+
+void 
+U_DrawTextureQuad(URenderer* renderer, const UVec3 position, const f32 size, TextureID texture)
+{
+	ui32 prev_vert_count = renderer->vertex_count;
+
+  renderer->buffer[renderer->vertex_count].position = position;
+	renderer->buffer[renderer->vertex_count].text_coord.x = 0.0f;
+	renderer->buffer[renderer->vertex_count].text_coord.y = 0.0f;
+
+  renderer->buffer[1 + renderer->vertex_count].position.x = position.x + size;
+  renderer->buffer[1 + renderer->vertex_count].position.y = position.y + 0.0f;
+  renderer->buffer[1 + renderer->vertex_count].position.z = position.z + 0.0f;
+	renderer->buffer[1 + renderer->vertex_count].text_coord.x = 1.0f;
+	renderer->buffer[1 + renderer->vertex_count].text_coord.y = 0.0f;
+
+  renderer->buffer[2 + renderer->vertex_count].position.x = position.x + size;
+  renderer->buffer[2 + renderer->vertex_count].position.y = position.y + size;
+  renderer->buffer[2 + renderer->vertex_count].position.z = position.z + 0.0f;
+	renderer->buffer[2 + renderer->vertex_count].text_coord.x = 1.0f;
+	renderer->buffer[2 + renderer->vertex_count].text_coord.y = 1.0f;
+
+	if(renderer->use_ebo)
+	{
+		// Define 4th vertex
+		renderer->buffer[3 + renderer->vertex_count].position.x = position.x + 0.0f;
+		renderer->buffer[3 + renderer->vertex_count].position.y = position.y + size;
+		renderer->buffer[3 + renderer->vertex_count].position.z = position.z + 0.0f;
+		renderer->buffer[3 + renderer->vertex_count].text_coord.x = 0.0f;
+		renderer->buffer[3 + renderer->vertex_count].text_coord.y = 1.0f;
+
+
+		renderer->index_buffer[renderer->index_count] = renderer->vertex_count;
+		renderer->index_buffer[1 + renderer->index_count] = renderer->vertex_count + 1;
+		renderer->index_buffer[2 + renderer->index_count] = renderer->vertex_count + 2;
+
+		renderer->index_buffer[3 + renderer->index_count] = renderer->vertex_count;
+		renderer->index_buffer[4 + renderer->index_count] = renderer->vertex_count + 2;
+		renderer->index_buffer[5 + renderer->index_count] = renderer->vertex_count + 3;
+
+		renderer->vertex_count += 4;
+		renderer->index_count += 6;
+	}
+	else
+	{
+		renderer->buffer[3 + renderer->vertex_count].position = position;
+
+		renderer->buffer[4 + renderer->vertex_count].position.x = position.x + size;
+		renderer->buffer[4 + renderer->vertex_count].position.y = position.y + size;
+		renderer->buffer[4 + renderer->vertex_count].position.z = position.z + 0.0f;
+
+		renderer->buffer[5 + renderer->vertex_count].position.x = position.x + 0.0f;
+		renderer->buffer[5 + renderer->vertex_count].position.y = position.y + size;
+		renderer->buffer[5 + renderer->vertex_count].position.z = position.z + 0.0f;
+
+		renderer->vertex_count += 6;
+	}
+
+	// TODO: Store information that this set of vertices should use a certain texture
+
+	/** Set vertices texture **/
+	ui32 n = (renderer->vertex_count - prev_vert_count);
+
+	bool texbuff_overflows = (renderer->samples_count + 1) > 32;
+	if(!texbuff_overflows)
+	{
+		renderer->samples[renderer->samples_count] = texture;
+		renderer->samples_count++;
+	}
+	else
+	{
+		// TODO: Error out of use another render batch
+		// TODO: Set logging/debug 
+		fprintf(stdout, "Overflow: Texture Buffer: Maximum samples count reached for current texture buffer\n");
+	}
+
+	// Index into texture buffer where actual gl texture buffer is stored
+	TextureID tex_idx = texbuff_overflows ? 0 : renderer->samples_count;
+	for (ui32 i = 0; i < n; i++)
+	{
+		renderer->buffer[i + prev_vert_count].texture_id = tex_idx;
 	}
 }
 

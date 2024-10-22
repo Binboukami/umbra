@@ -4,6 +4,7 @@
 #include "export_macros.h"
 #include "types.h"
 #include "umath.h"
+#include "umbragl.h"
 
 #ifndef U_MAX_VERTEX
     #define U_MAX_VERTEX 2048
@@ -24,6 +25,8 @@ typedef struct UVertex
 {
     UVec3 position;
     UVec3 color;
+    UVec2 text_coord;
+    TextureID texture_id;
 } UVertex;
 
 typedef struct URenderer {
@@ -40,7 +43,12 @@ typedef struct URenderer {
     UVertex buffer[U_MAX_VERTEX];
     ui32 index_buffer[U_MAX_VERTEX * 2];
 
+    ui32 samples_count;
+    int samples[32];
+
     ui64 shader_id;
+
+    TextureID teste_texture;
 } URenderer;
 
 #ifdef __cplusplus
@@ -53,9 +61,12 @@ UMBRA_API void U_InitRenderer(URenderer* renderer, ui8 use_ebo);
 UMBRA_API void U_BeginDrawing(UCamera camera);
 UMBRA_API void U_EndDrawing();
 
+UMBRA_API TextureID LoadTexture(const char* path);
+
 /* Drawing: Primitives */
 UMBRA_API void U_DrawTris(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
 UMBRA_API void U_DrawQuad(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
+UMBRA_API void U_DrawTextureQuad(URenderer* renderer, const UVec3 position, const f32 size, TextureID texture);
 UMBRA_API void U_DrawRect(URenderer* renderer, const UVec3 position, const f32 width, const f32 height, const UVec3 color);
 
 UMBRA_API void U_DrawCube(URenderer* renderer, const UVec3 position, const f32 size, const UVec3 color);
