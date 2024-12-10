@@ -6,7 +6,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clangd code completion
 
 cmake_policy(SET CMP0063 NEW) # Allows hidding static symbols when exporting library
 
-# Compilation Flags
+#region Compiler Flags
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_FLAGS "-Wall -g -Wno-attributes -fPIC")
@@ -14,6 +15,8 @@ set(CMAKE_C_FLAGS "-Wall -g -Wno-attributes -fPIC")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_FLAGS "-Wall -g -fpermissive -fPIC")
+
+#endregion Compiler Flags
 
 project(
 		umbra
@@ -119,3 +122,14 @@ file(
 	resources/shaders/default.frag.glsl
 
 	DESTINATION ${SHADERS_DIR})
+
+option(BUILD_EXAMPLES "Build example programs" OFF)
+
+if(BUILD_EXAMPLES)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
+	add_executable(init_window examples/init_window.cpp)
+
+	target_link_libraries(init_window umbra)
+endif(BUILD_EXAMPLES)
+
+unset(BUILD_EXAMPLES CACHE)
