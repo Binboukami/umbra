@@ -2,6 +2,7 @@
 .idea
 .cache
 build
+bin
 cmake-*
 main.c*
 compile_commands.json
