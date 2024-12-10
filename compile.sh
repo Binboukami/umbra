@@ -1,2 +1,2 @@
-mkdir -p build && cd build
+mkdir -p bin && cd bin
 cmake -G Ninja -S .. -B . && ninja
