@@ -123,7 +123,7 @@ file(
 
 	DESTINATION ${SHADERS_DIR})
 
-option(BUILD_EXAMPLES "Build example programs" OFF)
+option(BUILD_EXAMPLES "Build example programs" ON)
 
 if(BUILD_EXAMPLES)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
