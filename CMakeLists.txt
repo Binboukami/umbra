@@ -4,13 +4,13 @@ include(FetchContent)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clangd code completion
 
-cmake_policy(SET CMP0063 NEW) # Allows hidding static symbols when exporting library
+cmake_policy(SET CMP0063 NEW) # Allows hiding static symbols when exporting library
 
 #region Compiler Flags
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
-set(CMAKE_C_FLAGS "-Wall -g -Wno-attributes -fPIC")
+set(CMAKE_C_FLAGS "-Wall -g -Wno-attributes -fPIC -fvisibility=hidden")
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)

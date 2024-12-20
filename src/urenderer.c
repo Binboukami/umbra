@@ -95,8 +95,10 @@ TextureID LoadTexture(const char* path)
 
 void U_BeginDrawing(UCamera camera)
 {
-	UWindow* window = &UCORE.window;
-	URenderer* renderer = &UCORE.renderer;
+	const UCoreContextRef u_instance = U_GetInstance();
+
+	UWindow* window = &u_instance->window;
+	URenderer* renderer = &u_instance->renderer;
 
 	renderer->vertex_count = 0;
 	renderer->index_count = 0;
@@ -149,7 +151,9 @@ void U_BeginDrawing(UCamera camera)
 
 void U_EndDrawing()
 {
-	URenderer* renderer = &UCORE.renderer;
+	const UCoreContextRef u_instance = U_GetInstance();
+
+	URenderer* renderer = &u_instance->renderer;
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -284,8 +288,12 @@ void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const
 
 
 void 
-U_DrawTextureQuad(URenderer* renderer, const UVec3 position, const f32 size, TextureID texture)
+U_DrawTextureQuad(const UVec3 position, const f32 size, TextureID texture)
 {
+	const UCoreContextRef u_instance = U_GetInstance();
+
+	URenderer* renderer = &u_instance->renderer;
+
 	ui32 prev_vert_count = renderer->vertex_count;
 
   renderer->buffer[renderer->vertex_count].position = position;

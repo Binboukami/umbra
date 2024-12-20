@@ -149,7 +149,7 @@ extern "C" {
 
 ui32 U_IsKeyDown(ui32 key);
 
-/** Interals */
+/** Internals */
 void U_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 #ifdef __cplusplus

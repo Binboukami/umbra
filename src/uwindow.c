@@ -3,6 +3,8 @@
 #include "uinput.h"
 #include "umbra.h"
 
+// extern UCoreContext UCORE; // Global library context
+
 bool U_InitWindow(const char* title, int width, int height)
 {
 	if(!glfwInit())
@@ -27,21 +29,22 @@ bool U_InitWindow(const char* title, int width, int height)
 	}
 
 	// Todo: Check for OpenGL Errors
+	UCoreContext* context = U_InitContext();
 
-	UCORE.window._glfw_handler = glfw_handler;
+	context->window._glfw_handler = glfw_handler;
 
 	glfwMakeContextCurrent(glfw_handler);
 
-	UCORE.window.title = title;
-	UCORE.window.width = width;
-	UCORE.window.height = height;
+	context->window.title = title;
+	context->window.width = width;
+	context->window.height = height;
 
-	UCORE.window.exit = false;
+	context->window.exit = false;
 
 	gladLoadGL();
 
-	// Init default renderering context
-	U_InitRenderer(&UCORE.renderer, true /* TODO: Load value from flag */);
+	// Init default rendering context
+	U_InitRenderer(&context->renderer, true /* TODO: Load value from flag */);
 
 	// Set window clip space
 	U_SetViewport3D(0, 0, width, height, 1, -1);
@@ -49,7 +52,7 @@ bool U_InitWindow(const char* title, int width, int height)
 	// Ensure key states are initialized to false
 	for(int i = 0; i < U_NUM_SUPPORTED_KEYS; i++)
 	{
-		UCORE.input.current_frame_keys[i] = false;
+		context->input.current_frame_keys[i] = false;
 	}
 
 	// Set input callback
@@ -60,15 +63,18 @@ bool U_InitWindow(const char* title, int width, int height)
 
 bool U_ShouldCloseWindow()
 {
-	U_SwapBuffers(UCORE.window);
+	const UCoreContextRef context = U_GetInstance();
+
+	U_SwapBuffers(context->window);
 
 	U_PollWindowEvents();
-	return glfwWindowShouldClose(UCORE.window._glfw_handler) || UCORE.window.exit;
+	return glfwWindowShouldClose(context->window._glfw_handler) || context->window.exit;
 }
 
 void U_CloseWindow()
 {
-	glfwDestroyWindow(UCORE.window._glfw_handler);
+	const UCoreContextRef context = U_GetInstance();
+
+	glfwDestroyWindow(context->window._glfw_handler);
 	glfwTerminate();
-	// free(window_ptr);
 }
