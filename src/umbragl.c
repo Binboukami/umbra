@@ -65,8 +65,8 @@ void U_GenerateVAO(ui32* buffer)
 
   const UVertexArrayObject new_vao = { .id = *buffer };
 
-  G_GL_STATE._vaos_counter++;
-  G_GL_STATE.vaos[G_GL_STATE._vaos_counter] = new_vao;
+  G_GL_STATE.vaos_counter_++;
+  G_GL_STATE.vaos[G_GL_STATE.vaos_counter_] = new_vao;
 };
 
 void U_BindVertexArray(const ui32 vao)

@@ -63,7 +63,7 @@ typedef struct GLState {
 	ui8 current_vao;
 	ui8 current_vbo;
 
-	ui8 _vaos_counter;
+	ui8 vaos_counter_;
 	UVertexArrayObject vaos[U_MAX_VAO_BUFFERS];
 	ui8 vbos[U_MAX_VBO_BUFFERS];
 } GLState;

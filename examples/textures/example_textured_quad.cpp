@@ -2,10 +2,11 @@
 
 int main()
 {
+  (void)U_InitContext(); // Ignore result
   U_InitWindow("hello, world", 800, 600);
 
-  UCamera camera = { 0.0f, 0.0f, 0.0f, UProjectionType::U_ORTHO, 90.0f };
-  TextureID tex = LoadTexture("/home/scylla/repos/umbra/examples/textures/sample_texture.jpg");
+  constexpr UCamera camera = { 0.0f, 0.0f, 0.0f, UProjectionType::U_ORTHO, 90.0f };
+  const TextureID tex = LoadTexture("../../../examples/textures/sample_texture.jpg");
   
   while(!U_ShouldCloseWindow())
   {

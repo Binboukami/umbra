@@ -3,16 +3,8 @@
 #include "uinput.h"
 #include "umbra.h"
 
-// extern UCoreContext UCORE; // Global library context
-
-bool U_InitWindow(const char *title, int width, int height) {
-	if (!glfwInit()) {
-		fprintf(stderr, "An error occurred while initializing window");
-		return NULL;
-	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+bool U_InitWindow(const char *title, const int width, const int height) {
+	UCoreContext *context = U_GetInstance();
 
 	GLFWwindow *glfw_handler = glfwCreateWindow(
 		width,
@@ -26,17 +18,16 @@ bool U_InitWindow(const char *title, int width, int height) {
 	}
 
 	// Todo: Check for OpenGL Errors
-	UCoreContext *context = U_InitContext();
-
-	context->window._glfw_handler = glfw_handler;
-
 	glfwMakeContextCurrent(glfw_handler);
 
-	context->window.title = title;
-	context->window.width = width;
-	context->window.height = height;
+	context->window = (UWindow){
+		.title = title,
+		.width = width,
+		.height = height,
 
-	context->window.exit = false;
+		._glfw_handler =  glfw_handler,
+		.exit = false
+	};
 
 	gladLoadGL();
 

@@ -1,15 +1,13 @@
 #pragma once
 
 /* Macro definitions */
-#include <stdlib.h>
-
 #include "export_macros.h"
 #include "umath.h"
 #include "uinput.h"
 #include "urenderer.h"
 #include "umbragl.h"
 
-/* Structure defitions */
+/* Structure definitions */
 #define MAX_SUPPORTED_RENDERERS 8
 #define ORTHO_CLIPPING_SPACE 10.0f
 
@@ -21,15 +19,19 @@ typedef struct UCoreContext {
 
 typedef UCoreContext *UCoreContextRef;
 
+typedef union {
+	UCoreContext *uc_;
+	ui8 error_;
+} U_InitContextResult;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Context handling */
-UCoreContextRef U_InitContext();
+UMBRA_API U_InitContextResult U_InitContext();
 
 UMBRA_API UCoreContextRef U_GetInstance();
-
 UMBRA_API void U_DestroyContext();
 
 /* Window API */

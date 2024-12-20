@@ -2,7 +2,8 @@
 
 int main()
 {
-  U_InitWindow("hello, world", 800, 600);
+  (void)U_InitContext();
+  (void)U_InitWindow("hello, world", 800, 600);
   
   while(!U_ShouldCloseWindow())
   {
