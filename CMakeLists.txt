@@ -128,11 +128,11 @@ option(BUILD_EXAMPLES "Build example programs" ON)
 if(BUILD_EXAMPLES)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/examples)
 
-	add_executable(init_window examples/example_init_window.cpp)
-	target_link_libraries(init_window umbra)
+	add_executable(example_init_window examples/example_init_window.cpp)
+	target_link_libraries(example_init_window umbra)
 
-	add_executable(textures examples/textures/example_textured_quad.cpp)
-	target_link_libraries(textures umbra)
+	add_executable(example_textures examples/textures/example_textured_quad.cpp)
+	target_link_libraries(example_textures umbra)
 endif(BUILD_EXAMPLES)
 
 unset(BUILD_EXAMPLES CACHE)
