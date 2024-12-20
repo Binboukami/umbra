@@ -5,10 +5,8 @@
 
 // extern UCoreContext UCORE; // Global library context
 
-bool U_InitWindow(const char* title, int width, int height)
-{
-	if(!glfwInit())
-	{
+bool U_InitWindow(const char *title, int width, int height) {
+	if (!glfwInit()) {
 		fprintf(stderr, "An error occurred while initializing window");
 		return NULL;
 	}
@@ -16,20 +14,19 @@ bool U_InitWindow(const char* title, int width, int height)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-	GLFWwindow* glfw_handler = glfwCreateWindow(
-			width,
-			height,
-			title,
-			NULL, NULL);
+	GLFWwindow *glfw_handler = glfwCreateWindow(
+		width,
+		height,
+		title,
+		NULL, NULL);
 
-	if(glfw_handler == NULL)
-	{
+	if (glfw_handler == NULL) {
 		fprintf(stderr, "Could not initialize window");
 		return NULL;
 	}
 
 	// Todo: Check for OpenGL Errors
-	UCoreContext* context = U_InitContext();
+	UCoreContext *context = U_InitContext();
 
 	context->window._glfw_handler = glfw_handler;
 
@@ -50,8 +47,7 @@ bool U_InitWindow(const char* title, int width, int height)
 	U_SetViewport3D(0, 0, width, height, 1, -1);
 
 	// Ensure key states are initialized to false
-	for(int i = 0; i < U_NUM_SUPPORTED_KEYS; i++)
-	{
+	for (int i = 0; i < U_NUM_SUPPORTED_KEYS; i++) {
 		context->input.current_frame_keys[i] = false;
 	}
 
@@ -61,8 +57,7 @@ bool U_InitWindow(const char* title, int width, int height)
 	return true;
 }
 
-bool U_ShouldCloseWindow()
-{
+bool U_ShouldCloseWindow() {
 	const UCoreContextRef context = U_GetInstance();
 
 	U_SwapBuffers(context->window);
@@ -71,8 +66,7 @@ bool U_ShouldCloseWindow()
 	return glfwWindowShouldClose(context->window._glfw_handler) || context->window.exit;
 }
 
-void U_CloseWindow()
-{
+void U_CloseWindow() {
 	const UCoreContextRef context = U_GetInstance();
 
 	glfwDestroyWindow(context->window._glfw_handler);

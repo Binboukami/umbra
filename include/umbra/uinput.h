@@ -8,7 +8,7 @@
 #define U_NUM_SUPPORTED_KEYS 120
 
 #ifndef U_MAX_KEYS_PRESSED
-    #define U_MAX_KEYS_PRESSED 4
+#define U_MAX_KEYS_PRESSED 4
 #endif
 
 /** Renamed GLFW defined keys */
@@ -135,12 +135,10 @@
 #define U_KEY_RIGHT_SUPER        GLFW_KEY_RIGHT_SUPER
 #define U_KEY_MENU               GLFW_KEY_MENU
 
-typedef struct UInputHandler
-{
-    ui32 current_frame_keys[U_NUM_SUPPORTED_KEYS];
-    bool is_modifier_pressed;
-    ui32 current_frame_modifier[3]; // CTRL | SHIFT | ALT
-
+typedef struct UInputHandler {
+	ui32 current_frame_keys[U_NUM_SUPPORTED_KEYS];
+	bool is_modifier_pressed;
+	ui32 current_frame_modifier[3]; // CTRL | SHIFT | ALT
 } UInputHandler;
 
 #ifdef __cplusplus
@@ -150,7 +148,7 @@ extern "C" {
 ui32 U_IsKeyDown(ui32 key);
 
 /** Internals */
-void U_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void U_KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 #ifdef __cplusplus
 }
