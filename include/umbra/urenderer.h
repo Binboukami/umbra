@@ -68,7 +68,7 @@ UMBRA_API void U_DrawTris(URenderer *renderer, const UVec3 position, const f32 s
 
 UMBRA_API void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const UVec3 color);
 
-UMBRA_API void U_DrawTextureQuad(const UVec3 position, const f32 size, TextureID texture);
+UMBRA_API void U_DrawTextureQuad(URenderer *renderer, const UVec3 position, const f32 size, TextureID texture);
 
 UMBRA_API void U_DrawRect(URenderer *renderer, const UVec3 position, const f32 width, const f32 height,
                           const UVec3 color);

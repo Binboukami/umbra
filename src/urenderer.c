@@ -265,11 +265,7 @@ void U_DrawQuad(URenderer *renderer, const UVec3 position, const f32 size, const
 
 
 void
-U_DrawTextureQuad(const UVec3 position, const f32 size, TextureID texture) {
-	const UCoreContextRef u_instance = U_GetInstance();
-
-	URenderer *renderer = &u_instance->renderer;
-
+U_DrawTextureQuad(URenderer *renderer, const UVec3 position, const f32 size, TextureID texture) {
 	ui32 prev_vert_count = renderer->vertex_count;
 
 	renderer->buffer[renderer->vertex_count].position = position;

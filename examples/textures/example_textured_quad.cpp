@@ -1,24 +1,31 @@
+#include <iostream>
 #include "umbra.h"
 
-int main()
-{
-  (void)U_InitContext(); // Ignore result
-  U_InitWindow("hello, world", 800, 600);
+int main() {
+	const U_InitContextResult result = U_InitContext(); // Ignore result
 
-  constexpr UCamera camera = { 0.0f, 0.0f, 0.0f, UProjectionType::U_ORTHO, 90.0f };
-  const TextureID tex = LoadTexture("../../../examples/textures/sample_texture.jpg");
-  
-  while(!U_ShouldCloseWindow())
-  {
-    U_BeginDrawing(camera);
+	if (result.uc_ == nullptr) {
+		std::cerr << "Error while initializing UmbraLib; ERROR: " << result.error_ << std::endl;
+		exit(EXIT_FAILURE);
+	}
 
-      U_DrawTextureQuad({0.0f, 0.0f, 0.0f}, 100.0f, tex);
+	(void) U_InitWindow("hello, world", 800, 600);
 
-    U_EndDrawing();
-  }
+	constexpr UCamera camera = {0.0f, 0.0f, 0.0f, UProjectionType::U_ORTHO, 90.0f};
+	const TextureID tex = LoadTexture("../../../examples/textures/sample_texture.jpg");
 
-  U_CloseWindow();
-  U_DestroyContext();
+	const UCoreContextRef ucore = result.uc_;
 
-  return 0;
+	while (!U_ShouldCloseWindow()) {
+		U_BeginDrawing(camera);
+
+		U_DrawTextureQuad(&ucore->renderer, {0.0f, 0.0f, 0.0f}, 100.0f, tex);
+
+		U_EndDrawing();
+	}
+
+	U_CloseWindow();
+	U_DestroyContext();
+
+	return 0;
 }
